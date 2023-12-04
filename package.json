@@ -1,0 +1,20 @@
+{
+  "name": "384-react",
+  "version": "1.0.0",
+  "description": "React components for 384 Lib",
+  "main": "./build/index.js",
+  "repository": "https://github.com/384co/384-react.git",
+  "author": "matt384 <108557364+matt384@users.noreply.github.com>",
+  "license": "GPL-3.0 license Only",
+  "type": "module",
+  "private": false,
+  "dependencies": {
+    "lib384": "git+https://github.com/384co/lib-proto-02.git",
+    "lodash": "^4.17.21",
+    "mobx": "^6.12.0",
+    "typescript": "^5.2.0"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.14.202"
+  }
+}

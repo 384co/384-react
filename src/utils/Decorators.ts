@@ -17,7 +17,7 @@ export function Memoize(target: any, propertyKey: string /* ClassGetterDecorator
       }
     }
   }
-  
+
   // Decorator
   export function Ready(target: any, propertyKey: string /* ClassGetterDecoratorContext */, descriptor?: PropertyDescriptor) {
     if ((descriptor) && (descriptor.get)) {

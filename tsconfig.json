@@ -1,13 +1,8 @@
 {
   "compilerOptions": {
     "target": "es2017",
-    "lib": [
-      "es6",
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
-    "types": ["cypress", "node"],
+    "lib": ["es6", "dom", "dom.iterable", "esnext"],
+    "outDir": "dist",
     "baseUrl": "./src",
     "allowJs": true,
     "skipLibCheck": true,
@@ -20,15 +15,13 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "noEmit": true,
+    "noEmit": false,
     "noImplicitAny": true,
     "noImplicitThis": true,
     "strictNullChecks": true,
-    // "experimentalDecorators": true,
+    "experimentalDecorators": true,
     "jsx": "react-jsx",
-    "typeRoots": ["./src/types"],
   },
-  "include": [
-    "src"
-  ]
+  "include": ["src/**/*"],
+  "exclude": ["node_modules, __test__"]
 }

@@ -1,6 +1,6 @@
 import { makeAutoObservable, onBecomeUnobserved, onBecomeObserved, configure, toJS, computed, action, autorun } from "mobx";
 import { orderBy } from 'lodash';
-import IndexedKV from "../utils/IndexedKV.js";
+import IndexedKV from "../utils/IndexedKV";
 import MessageWorker from "../workers/MessageWorker.js";
 import * as __ from "lib384/dist/384.esm.js";
 const blob = new Blob([`(${MessageWorker})()`]);
@@ -195,9 +195,9 @@ class ChannelStore {
     private save = async () => {
         await this.ChannelStoreReadyFlag
         if (this._savingTimout) {
-            clearTimeout(this._savingTimout)
+            window.clearTimeout(this._savingTimout)
         }
-        this._savingTimout = setTimeout(async () => {
+        this._savingTimout = window.setTimeout(async () => {
             try {
                 if (this.id) {
                     const save = {

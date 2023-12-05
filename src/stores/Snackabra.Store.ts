@@ -1,7 +1,7 @@
 import { makeAutoObservable, onBecomeUnobserved, configure, toJS, autorun } from "mobx";
 import * as __ from "lib384/dist/384.esm.js";
 import ChannelStore from "./Channel.Store";
-import IndexedKV from "../utils/IndexedKV.js";
+import IndexedKV from "../utils/IndexedKV";
 
 
 console.log("=========== mobx-snackabra-store loading ===========")
@@ -19,7 +19,21 @@ configure({
   disableErrorBoundaries: false
 });
 
-class SnackabraStore {
+export interface ISnackabraStore {
+  readyResolver: (value: unknown) => void;
+  config: __.SBServer;
+  SB: __.Snackabra;
+  ready: Promise<unknown>;
+  channels: { [key: string]: ({ id: string, alias?: string, key?: JsonWebKey, readyResolver?: any } | ChannelStore) };
+  contacts: { [key: string]: string };
+  join: (channelId: string) => Promise<ChannelStore>;
+  create: (secret: any, alias: any) => Promise<ChannelStore>;
+  importKeys: (importedData: { roomData: { [x: string]: any; }; roomMetadata: { [x: string]: any; }; contacts: any; }) => Promise<boolean>;
+  createContact: (alias: any, keyOrPubIdentifier: string | JsonWebKey) => string;
+  getContact: (keyOrPubIdentifier: string | JsonWebKey) => { _id: string; name: string; };
+}
+class SnackabraStore implements ISnackabraStore {
+
   readyResolver!: (value: unknown) => void;
   config: __.SBServer = {
     channel_server: "",
@@ -215,7 +229,7 @@ class SnackabraStore {
     return toJS(this._contacts)
   }
 
-  join = (channelId: string) => {
+  join = (channelId: string): Promise<ChannelStore> => {
     return new Promise(async (resolve, reject) => {
       try {
         let channelStore = new ChannelStore(this.config, channelId);
@@ -235,7 +249,7 @@ class SnackabraStore {
   }
 
 
-  create = (secret: any, alias: any) => {
+  create = (secret: any, alias: any): Promise<ChannelStore> => {
     return new Promise(async (resolve, reject) => {
       try {
         const channel = new ChannelStore(this.config);
@@ -243,7 +257,7 @@ class SnackabraStore {
         this.channels[channel.id] = channel;
         this.channels[channel.id].alias = alias;
         this.save();
-        resolve(this.channels[channel.id]);
+        resolve(this.channels[channel.id] as ChannelStore);
       } catch (e) {
         console.error(e)
         reject(e)
@@ -251,7 +265,7 @@ class SnackabraStore {
     });
   }
 
-  importKeys = (importedData: { roomData: { [x: string]: any; }; roomMetadata: { [x: string]: any; }; contacts: any; }) => {
+  importKeys = (importedData: { roomData: { [x: string]: any; }; roomMetadata: { [x: string]: any; }; contacts: any; }): Promise<boolean> => {
     return new Promise(async (resolve, reject) => {
       try {
         console.log('importing keys')

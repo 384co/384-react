@@ -2,6 +2,7 @@
   "name": "384-react",
   "version": "1.0.0",
   "description": "React components for 384 Lib",
+  "types": "./dist/384.react.d.ts",
   "main": "./dist/index.js",
   "repository": "https://github.com/384co/384-react.git",
   "author": "matt384 <108557364+matt384@users.noreply.github.com>",

@@ -15,7 +15,7 @@ export interface ChannelStoreType {
 	getOldMessages: (length: number | undefined) => Promise<unknown>;
 	downloadData: () => Promise<unknown>;
 	replyEncryptionKey: (recipientPubkey: string) => Promise<unknown>;
-	newMessage: (message: string | __.SBMessageContents | undefined) => Promise<__.SnackabraTypes.ChannelMessage>;
+	newMessage: (message?: string) => typeof __.NewSB.SBMessage;
 	sendMessage: (SBM: any) => Promise<unknown>;
 	lock: () => Promise<unknown>;
 	create: (secret: string) => Promise<unknown>;
@@ -69,7 +69,7 @@ declare class ChannelStore implements ChannelStoreType {
 	set owner(owner: boolean);
 	getOldMessages: (length: number | undefined) => Promise<unknown>;
 	replyEncryptionKey: (recipientPubkey: string) => Promise<CryptoKey>;
-	newMessage: (message: string | __.SBMessageContents | undefined) => any;
+	newMessage: (message?: string) => any;
 	sendMessage: (SBM: any) => Promise<string>;
 	lock: () => Promise<unknown>;
 	downloadData: () => Promise<false | {

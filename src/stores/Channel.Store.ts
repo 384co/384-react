@@ -1,4 +1,4 @@
-import { makeAutoObservable, onBecomeUnobserved, onBecomeObserved, configure, toJS, computed, action, autorun } from "mobx";
+import { makeAutoObservable, onBecomeUnobserved, onBecomeObserved, toJS, computed, action } from "mobx";
 import { orderBy } from 'lodash';
 import IndexedKV from "../utils/IndexedKV";
 import MessageWorker from "../workers/MessageWorker.js";
@@ -284,7 +284,7 @@ class ChannelStore {
     }
 
     get socket() {
-        return this._socket;
+        return this._socket as any;
     }
 
     set socket(socket) {
@@ -293,8 +293,10 @@ class ChannelStore {
             return
         }
         this._socket = socket;
-        this.status = this._socket.status
-        this.save();
+        if (this._socket) {
+            this.status = this._socket.status
+            this.save();
+        }
     }
 
     get capacity() {
@@ -369,7 +371,7 @@ class ChannelStore {
         if (!this._socket) throw new Error("no socket")
         console.log("==== sending this message:")
         console.log(message)
-        return new SB.SBMessage(this._socket, message);
+        return new SB.SBMessage(this._socket, message) as any;
     };
 
     sendMessage = (SBM: any) => {

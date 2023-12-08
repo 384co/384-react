@@ -21,7 +21,7 @@ configure({
 
 export interface ISnackabraStore {
   readyResolver: (value: unknown) => void;
-  config: __.SBServer;
+  config: __.SnackabraTypes.SBServer;
   SB: __.Snackabra;
   ready: Promise<unknown>;
   channels: { [key: string]: ({ id: string, alias?: string, key?: JsonWebKey, readyResolver?: any } | ChannelStore) };
@@ -32,10 +32,10 @@ export interface ISnackabraStore {
   createContact: (alias: any, keyOrPubIdentifier: string | JsonWebKey) => string;
   getContact: (keyOrPubIdentifier: string | JsonWebKey) => { _id: string; name: string; };
 }
-class SnackabraStore implements ISnackabraStore {
+export class SnackabraStore implements ISnackabraStore {
 
   readyResolver!: (value: unknown) => void;
-  config: __.SBServer = {
+  config: __.SnackabraTypes.SBServer = {
     channel_server: "",
     channel_ws: "",
     storage_server: ""
@@ -47,7 +47,7 @@ class SnackabraStore implements ISnackabraStore {
     this.readyResolver = resolve
   })
 
-  constructor(sbConfig: __.SBServer) {
+  constructor(sbConfig: __.SnackabraTypes.SBServer) {
     if (!sbConfig) {
       throw new Error("SnackabraStore requires a config object")
     }

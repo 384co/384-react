@@ -62,7 +62,7 @@ declare class ChannelStore {
 	connect: (messageCallback?: ((...data: any[]) => void) | undefined) => Promise<boolean | this>;
 	receiveMessage: (m: __.ChannelMessage, updateState?: boolean) => void;
 }
-export interface ISnackabraStore {
+export interface SnackabraStoreType {
 	readyResolver: (value: unknown) => void;
 	config: __.SnackabraTypes.SBServer;
 	SB: __.Snackabra;
@@ -78,7 +78,7 @@ export interface ISnackabraStore {
 	contacts: {
 		[key: string]: string;
 	};
-	join: (channelId: string) => Promise<ChannelStore>;
+	join: (channelId: string, key?: JsonWebKey) => Promise<ChannelStore>;
 	create: (secret: any, alias: any) => Promise<ChannelStore>;
 	importKeys: (importedData: {
 		roomData: {
@@ -95,7 +95,7 @@ export interface ISnackabraStore {
 		name: string;
 	};
 }
-declare class SnackabraStore implements ISnackabraStore {
+declare class SnackabraStore implements SnackabraStoreType {
 	readyResolver: (value: unknown) => void;
 	config: __.SnackabraTypes.SBServer;
 	private _channels;

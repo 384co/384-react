@@ -34,7 +34,9 @@ export interface ChannelStoreType {
 
 }
 
-class ChannelStore {
+// export type ChannelStoreTypeAlias = ChannelStoreType;
+
+export class ChannelStore implements ChannelStoreType{
     private _id: any;
     private _alias: any;
     private _status = 'CLOSED'

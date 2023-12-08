@@ -1,6 +1,6 @@
 import { makeAutoObservable, onBecomeUnobserved, configure, toJS, autorun } from "mobx";
 import * as __ from "lib384/dist/384.esm.js";
-import ChannelStore from "./Channel.Store";
+import ChannelStore, {ChannelStoreType} from "./Channel.Store";
 import IndexedKV from "../utils/IndexedKV";
 
 

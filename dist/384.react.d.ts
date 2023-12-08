@@ -2,7 +2,26 @@
 
 import * as __ from 'lib384/dist/384.esm.js';
 
-declare class ChannelStore {
+export interface ChannelStoreType {
+	id: any;
+	key: any;
+	alias: any;
+	socket: __.SnackabraTypes.ChannelSocket;
+	capacity: any;
+	motd: any;
+	owner: any;
+	status: any;
+	messages: __.SnackabraTypes.ChannelMessage[];
+	getOldMessages: (length: number | undefined) => Promise<unknown>;
+	downloadData: () => Promise<unknown>;
+	replyEncryptionKey: (recipientPubkey: string) => Promise<unknown>;
+	newMessage: (message: string | __.SBMessageContents | undefined) => __.SnackabraTypes.ChannelMessage;
+	sendMessage: (SBM: any) => Promise<unknown>;
+	lock: () => Promise<unknown>;
+	create: (secret: string) => Promise<unknown>;
+	connect: (messageCallback?: ((...data: any[]) => void) | undefined) => Promise<unknown>;
+}
+declare class ChannelStore implements ChannelStoreType {
 	private _id;
 	private _alias;
 	private _status;

@@ -11,7 +11,8 @@ let cacheDb = new IndexedKV({
     db: 'sb_data',
     table: 'cache'
 });
-class ChannelStore {
+// export type ChannelStoreTypeAlias = ChannelStoreType;
+export class ChannelStore {
     constructor(config, channelId) {
         this._status = 'CLOSED';
         this._messages = [];

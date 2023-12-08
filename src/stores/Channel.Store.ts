@@ -13,6 +13,27 @@ let cacheDb = new IndexedKV({
     table: 'cache'
 });
 
+export interface ChannelStoreType {
+    id: any;
+    key: any;
+    alias: any;
+    socket: __.SnackabraTypes.ChannelSocket;
+    capacity: any;
+    motd: any;
+    owner: any;
+    status: any;
+    messages: __.SnackabraTypes.ChannelMessage[];
+    getOldMessages: (length: number | undefined) => Promise<unknown>;
+    downloadData: () => Promise<unknown>;
+    replyEncryptionKey: (recipientPubkey: string) => Promise<unknown>;
+    newMessage: (message: string | __.SBMessageContents | undefined) => __.SnackabraTypes.ChannelMessage;
+    sendMessage: (SBM: any) => Promise<unknown>;
+    lock: () => Promise<unknown>;
+    create: (secret: string) => Promise<unknown>;
+    connect: (messageCallback?: ((...data: any[]) => void) | undefined) => Promise<unknown>;
+
+}
+
 class ChannelStore {
     private _id: any;
     private _alias: any;

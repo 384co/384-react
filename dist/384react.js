@@ -12871,7 +12871,7 @@ var NewSB = {
 };
 
 // src/stores/Channel.Store.ts
-var import_lodash = __toESM(require_lodash(), 1);
+var import_lodash = __toESM(require_lodash());
 
 // src/utils/Misc.ts
 function _sb_assert2(val, msg) {

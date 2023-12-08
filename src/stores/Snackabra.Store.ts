@@ -19,20 +19,20 @@ configure({
   disableErrorBoundaries: false
 });
 
-export interface ISnackabraStore {
+export interface SnackabraStoreType {
   readyResolver: (value: unknown) => void;
   config: __.SnackabraTypes.SBServer;
   SB: __.Snackabra;
   ready: Promise<unknown>;
   channels: { [key: string]: ({ id: string, alias?: string, key?: JsonWebKey, readyResolver?: any } | ChannelStore) };
   contacts: { [key: string]: string };
-  join: (channelId: string) => Promise<ChannelStore>;
+  join: (channelId: string, key?: JsonWebKey) => Promise<ChannelStore>;
   create: (secret: any, alias: any) => Promise<ChannelStore>;
   importKeys: (importedData: { roomData: { [x: string]: any; }; roomMetadata: { [x: string]: any; }; contacts: any; }) => Promise<boolean>;
   createContact: (alias: any, keyOrPubIdentifier: string | JsonWebKey) => string;
   getContact: (keyOrPubIdentifier: string | JsonWebKey) => { _id: string; name: string; };
 }
-export class SnackabraStore implements ISnackabraStore {
+export class SnackabraStore implements SnackabraStoreType {
 
   readyResolver!: (value: unknown) => void;
   config: __.SnackabraTypes.SBServer = {

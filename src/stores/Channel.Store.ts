@@ -26,7 +26,7 @@ export interface ChannelStoreType {
     getOldMessages: (length: number | undefined) => Promise<unknown>;
     downloadData: () => Promise<unknown>;
     replyEncryptionKey: (recipientPubkey: string) => Promise<unknown>;
-    newMessage: (message: string | __.SBMessageContents | undefined) => __.SnackabraTypes.ChannelMessage;
+    newMessage: (message: string | __.SBMessageContents | undefined) => Promise<__.SnackabraTypes.ChannelMessage>;
     sendMessage: (SBM: any) => Promise<unknown>;
     lock: () => Promise<unknown>;
     create: (secret: string) => Promise<unknown>;

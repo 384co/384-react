@@ -137,7 +137,7 @@ declare class SnackabraStore implements ISnackabraStore {
 	get contacts(): {
 		[key: string]: string;
 	};
-	join: (channelId: string) => Promise<ChannelStore>;
+	join: (channelId: string, key?: JsonWebKey) => Promise<ChannelStore>;
 	create: (secret: any, alias: any) => Promise<ChannelStore>;
 	importKeys: (importedData: {
 		roomData: {
@@ -151,6 +151,10 @@ declare class SnackabraStore implements ISnackabraStore {
 }
 export declare const stores: {
 	SB: typeof SnackabraStore;
+};
+export type Stores = {
+	snackabraStore: SnackabraStore;
+	channelStore: ChannelStore;
 };
 
 export {};

@@ -156,12 +156,15 @@ export class SnackabraStore {
             this.save();
             return this._contacts[key.x + ' ' + key.y];
         };
-        this.join = (channelId) => {
+        this.join = (channelId, key) => {
             return new Promise(async (resolve, reject) => {
                 try {
                     let channelStore = new ChannelStore(this.config, channelId);
                     let channel = await channelStore.connect(console.log);
                     if (channel instanceof ChannelStore) {
+                        if (key) {
+                            channel.key = key;
+                        }
                         this._channels[channel.id] = channel;
                         await this.save();
                         resolve(channel);

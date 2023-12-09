@@ -13,7 +13,7 @@ export interface ChannelStoreType {
 	status: any;
 	messages: __.SnackabraTypes.ChannelMessage[];
 	getOldMessages: (length: number | undefined) => Promise<unknown>;
-	downloadData: () => Promise<unknown>;
+	getStorageAmount: () => Promise<unknown>;
 	replyEncryptionKey: (recipientPubkey: string) => Promise<unknown>;
 	newMessage: (message?: string) => typeof __.NewSB.SBMessage;
 	sendMessage: (SBM: any) => Promise<unknown>;
@@ -67,6 +67,7 @@ declare class ChannelStore implements ChannelStoreType {
 	set status(status: string);
 	get owner(): boolean;
 	set owner(owner: boolean);
+	getStorageAmount: () => any;
 	getOldMessages: (length: number | undefined) => Promise<unknown>;
 	replyEncryptionKey: (recipientPubkey: string) => Promise<CryptoKey>;
 	newMessage: (message?: string) => any;

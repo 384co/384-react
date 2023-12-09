@@ -13482,6 +13482,9 @@ var ChannelStore = class {
     this.getChannelMessages = async () => {
       this.workerPort.port2.postMessage({ method: "getMessages", channel_id: this._id });
     };
+    this.getStorageAmount = () => {
+      return this._socket?.api.getStorageLimit();
+    };
     this.getOldMessages = (length) => {
       return new Promise((resolve, reject) => {
         if (!this._socket)

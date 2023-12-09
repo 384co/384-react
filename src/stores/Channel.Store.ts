@@ -362,7 +362,7 @@ export class ChannelStore implements ChannelStoreType{
         this._owner = owner
     }
 
-    getStorageAmount = () => {
+    getStorageAmount = (): any => {
         return this._socket?.api.getStorageLimit()
     }
 

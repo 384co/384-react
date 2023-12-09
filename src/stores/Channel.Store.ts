@@ -24,7 +24,7 @@ export interface ChannelStoreType {
     status: any;
     messages: __.SnackabraTypes.ChannelMessage[];
     getOldMessages: (length: number | undefined) => Promise<unknown>;
-    downloadData: () => Promise<unknown>;
+    getStorageAmount: () => Promise<unknown>;
     replyEncryptionKey: (recipientPubkey: string) => Promise<unknown>;
     newMessage: (message?: string) => typeof __.NewSB.SBMessage;
     sendMessage: (SBM: any) => Promise<unknown>;
@@ -360,6 +360,10 @@ export class ChannelStore implements ChannelStoreType{
 
     set owner(owner) {
         this._owner = owner
+    }
+
+    getStorageAmount = () => {
+        return this._socket?.api.getStorageLimit()
     }
 
     getOldMessages = (length: number | undefined) => {

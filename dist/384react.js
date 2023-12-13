@@ -13962,11 +13962,11 @@ var SnackabraStore = class {
       return new Promise(async (resolve, reject) => {
         try {
           let channelStore = new Channel_Store_default(this.config, channelId);
+          if (key) {
+            channelStore.key = key;
+          }
           let channel = await channelStore.connect(console.log);
           if (channel instanceof Channel_Store_default) {
-            if (key) {
-              channel.key = key;
-            }
             this._channels[channel.id] = channel;
             await this.save();
             resolve(channel);

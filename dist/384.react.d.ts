@@ -17,7 +17,7 @@ export interface ChannelStoreType {
 	getStorageAmount: () => Promise<unknown>;
 	replyEncryptionKey: (recipientPubkey: string) => Promise<unknown>;
 	sendMessage: (body: {
-		[key: string]: string;
+		[key: string]: any;
 	}, message?: string) => Promise<unknown>;
 	lock: () => Promise<unknown>;
 	create: (secret: string) => Promise<unknown>;
@@ -74,7 +74,7 @@ declare class ChannelStore implements ChannelStoreType {
 	getOldMessages: (length: number | undefined) => Promise<unknown>;
 	replyEncryptionKey: (recipientPubkey: string) => Promise<CryptoKey>;
 	sendMessage: (body: {
-		[key: string]: string;
+		[key: string]: any;
 	}, message?: string) => Promise<string>;
 	lock: () => Promise<unknown>;
 	downloadData: () => Promise<false | {

@@ -27,7 +27,7 @@ export interface ChannelStoreType {
     getOldMessages: (length: number | undefined) => Promise<unknown>;
     getStorageAmount: () => Promise<unknown>;
     replyEncryptionKey: (recipientPubkey: string) => Promise<unknown>;
-    sendMessage: (body: {[key: string]: string},  message?: string) => Promise<unknown>;
+    sendMessage: (body: {[key: string]: any},  message?: string) => Promise<unknown>;
     lock: () => Promise<unknown>;
     create: (secret: string) => Promise<unknown>;
     connect: (messageCallback?: ((...data: any[]) => void) | undefined) => Promise<unknown>;
@@ -397,7 +397,7 @@ export class ChannelStore implements ChannelStoreType{
         return Crypto.deriveKey(this._socket.keys.privateKey, await Crypto.importKey("jwk", JSON.parse(recipientPubkey), "ECDH", true, []), "AES", false, ["encrypt", "decrypt"])
     }
 
-    sendMessage = (body: {[key: string]: string},  message?: string) => {
+    sendMessage = (body: {[key: string]: any},  message?: string) => {
         if (!this._socket) throw new Error("no socket")
             const SBM = new SB.SBMessage(this._socket, message ? message : '') as any
             SBM.contents = body

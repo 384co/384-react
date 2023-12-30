@@ -23,11 +23,11 @@ export interface ChannelStoreType {
     owner: any;
     status: any;
     messages: __.SnackabraTypes.ChannelMessage[];
+    getMessages: () => __.SnackabraTypes.ChannelMessage[];
     getOldMessages: (length: number | undefined) => Promise<unknown>;
     getStorageAmount: () => Promise<unknown>;
     replyEncryptionKey: (recipientPubkey: string) => Promise<unknown>;
-    newMessage: (message?: string) => typeof __.NewSB.SBMessage;
-    sendMessage: (SBM: any) => Promise<unknown>;
+    sendMessage: (body: {[key: string]: string},  message?: string) => Promise<unknown>;
     lock: () => Promise<unknown>;
     create: (secret: string) => Promise<unknown>;
     connect: (messageCallback?: ((...data: any[]) => void) | undefined) => Promise<unknown>;
@@ -99,7 +99,6 @@ export class ChannelStore implements ChannelStoreType{
             getOldMessages: action,
             downloadData: action,
             replyEncryptionKey: action,
-            newMessage: action,
             lock: action,
             create: action,
             connect: action,
@@ -288,6 +287,10 @@ export class ChannelStore implements ChannelStoreType{
         return this._messages;
     }
 
+    getMessages = () => {
+        return toJS(this._messages)
+    }
+
     set messages(messages) {
         this._messages = messages;
         this.save();
@@ -394,20 +397,11 @@ export class ChannelStore implements ChannelStoreType{
         return Crypto.deriveKey(this._socket.keys.privateKey, await Crypto.importKey("jwk", JSON.parse(recipientPubkey), "ECDH", true, []), "AES", false, ["encrypt", "decrypt"])
     }
 
-    newMessage = (message?: string): any => {
+    sendMessage = (body: {[key: string]: string},  message?: string) => {
         if (!this._socket) throw new Error("no socket")
-        console.log("==== sending this message:")
-        console.log(message)
-        return new SB.SBMessage(this._socket, message)
-    };
-
-    sendMessage = (SBM: any) => {
-        if (!this._socket) throw new Error("no socket")
-        if (SBM instanceof SB.SBMessage) {
+            const SBM = new SB.SBMessage(this._socket, message ? message : '') as any
+            SBM.contents = body
             return this._socket.send(SBM);
-        } else {
-            throw new Error("sendMessage expects an SBMessage")
-        }
     }
 
     // This isnt in the the jslib atm

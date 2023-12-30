@@ -13482,6 +13482,9 @@ var ChannelStore = class {
     this.getChannelMessages = async () => {
       this.workerPort.port2.postMessage({ method: "getMessages", channel_id: this._id });
     };
+    this.getMessages = () => {
+      return toJS(this._messages);
+    };
     this.getStorageAmount = () => {
       return this._socket?.api.getStorageLimit();
     };
@@ -13512,21 +13515,12 @@ var ChannelStore = class {
         throw new Error("no private key, this shouldn't happen!");
       return Crypto.deriveKey(this._socket.keys.privateKey, await Crypto.importKey("jwk", JSON.parse(recipientPubkey), "ECDH", true, []), "AES", false, ["encrypt", "decrypt"]);
     };
-    this.newMessage = (message) => {
+    this.sendMessage = (body, message) => {
       if (!this._socket)
         throw new Error("no socket");
-      console.log("==== sending this message:");
-      console.log(message);
-      return new SB2.SBMessage(this._socket, message);
-    };
-    this.sendMessage = (SBM) => {
-      if (!this._socket)
-        throw new Error("no socket");
-      if (SBM instanceof SB2.SBMessage) {
-        return this._socket.send(SBM);
-      } else {
-        throw new Error("sendMessage expects an SBMessage");
-      }
+      const SBM = new SB2.SBMessage(this._socket, message ? message : "");
+      SBM.contents = body;
+      return this._socket.send(SBM);
     };
     // This isnt in the the jslib atm
     // PSM: it is now but needs testing
@@ -13642,7 +13636,6 @@ var ChannelStore = class {
       getOldMessages: action,
       downloadData: action,
       replyEncryptionKey: action,
-      newMessage: action,
       lock: action,
       create: action,
       connect: action

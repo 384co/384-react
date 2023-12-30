@@ -12,11 +12,13 @@ export interface ChannelStoreType {
 	owner: any;
 	status: any;
 	messages: __.SnackabraTypes.ChannelMessage[];
+	getMessages: () => __.SnackabraTypes.ChannelMessage[];
 	getOldMessages: (length: number | undefined) => Promise<unknown>;
 	getStorageAmount: () => Promise<unknown>;
 	replyEncryptionKey: (recipientPubkey: string) => Promise<unknown>;
-	newMessage: (message?: string) => typeof __.NewSB.SBMessage;
-	sendMessage: (SBM: any) => Promise<unknown>;
+	sendMessage: (body: {
+		[key: string]: string;
+	}, message?: string) => Promise<unknown>;
 	lock: () => Promise<unknown>;
 	create: (secret: string) => Promise<unknown>;
 	connect: (messageCallback?: ((...data: any[]) => void) | undefined) => Promise<unknown>;
@@ -54,6 +56,7 @@ declare class ChannelStore implements ChannelStoreType {
 	get keys(): any;
 	set keys(keys: any);
 	get messages(): __.ChannelMessage[];
+	getMessages: () => __.ChannelMessage[];
 	set messages(messages: __.ChannelMessage[]);
 	set alias(alias: any);
 	get alias(): any;
@@ -70,8 +73,9 @@ declare class ChannelStore implements ChannelStoreType {
 	getStorageAmount: () => any;
 	getOldMessages: (length: number | undefined) => Promise<unknown>;
 	replyEncryptionKey: (recipientPubkey: string) => Promise<CryptoKey>;
-	newMessage: (message?: string) => any;
-	sendMessage: (SBM: any) => Promise<string>;
+	sendMessage: (body: {
+		[key: string]: string;
+	}, message?: string) => Promise<string>;
 	lock: () => Promise<unknown>;
 	downloadData: () => Promise<false | {
 		storage: {
@@ -93,7 +97,7 @@ export interface SnackabraStoreType {
 			alias?: string;
 			key?: JsonWebKey;
 			readyResolver?: any;
-		} | ChannelStore);
+		} | ChannelStoreType);
 	};
 	contacts: {
 		[key: string]: string;
@@ -136,20 +140,10 @@ declare class SnackabraStore implements SnackabraStoreType {
 	};
 	createContact: (alias: any, keyOrPubIdentifier: string | JsonWebKey) => string;
 	get channels(): {
-		[key: string]: ChannelStore | {
-			id: string;
-			alias?: string | undefined;
-			key?: JsonWebKey | undefined;
-			readyResolver?: any;
-		};
+		[key: string]: ChannelStoreType;
 	};
 	set channels(channels: {
-		[key: string]: ChannelStore | {
-			id: string;
-			alias?: string | undefined;
-			key?: JsonWebKey | undefined;
-			readyResolver?: any;
-		};
+		[key: string]: ChannelStoreType;
 	});
 	set contacts(contacts: {
 		[key: string]: string;

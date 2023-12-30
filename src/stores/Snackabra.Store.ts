@@ -24,7 +24,7 @@ export interface SnackabraStoreType {
   config: __.SnackabraTypes.SBServer;
   SB: __.Snackabra;
   ready: Promise<unknown>;
-  channels: { [key: string]: ({ id: string, alias?: string, key?: JsonWebKey, readyResolver?: any } | ChannelStore) };
+  channels: { [key: string]: ({ id: string, alias?: string, key?: JsonWebKey, readyResolver?: any } | ChannelStoreType) };
   contacts: { [key: string]: string };
   join: (channelId: string, key?: JsonWebKey) => Promise<ChannelStore>;
   create: (secret: any, alias: any) => Promise<ChannelStore>;
@@ -215,7 +215,7 @@ export class SnackabraStore implements SnackabraStoreType {
   }
 
   get channels() {
-    return this._channels
+    return this._channels as { [key: string]: ChannelStoreType }
   }
 
   set channels(channels) {

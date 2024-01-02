@@ -383,9 +383,9 @@ export class ChannelStore implements ChannelStoreType {
                     this.save();
                     this.getChannelMessages();
                     resolve(r_messages);
-                    if (r_messages.length === 100) {
-                        this.getOldMessages(r_messages.length);
-                    }
+                    // if (r_messages.length === 100) {
+                    //     this.getOldMessages(r_messages.length);
+                    // }
                 })
             } catch (e) {
                 reject(e)

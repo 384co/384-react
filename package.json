@@ -1,6 +1,6 @@
 {
   "name": "384-react",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "React components for 384 Lib",
   "types": "dist/384.react.d.ts",
   "main": "dist/index.js",

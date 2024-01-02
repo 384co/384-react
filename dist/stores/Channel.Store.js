@@ -95,13 +95,13 @@ export class ChannelStore {
         this.getStorageAmount = () => {
             return this._socket?.api.getStorageLimit();
         };
-        this.getOldMessages = (length) => {
+        this.getOldMessages = (length = 0) => {
             return new Promise((resolve, reject) => {
                 if (!this._socket)
                     throw new Error("no socket");
                 try {
                     this._socket.api.getOldMessages(length).then((r_messages) => {
-                        console.log("==== got these old messages:");
+                        console.log("==== got these old messages:", r_messages.length);
                         // this.messages = r_messages
                         for (let x in r_messages) {
                             let m = r_messages[x];
@@ -110,6 +110,9 @@ export class ChannelStore {
                         this.save();
                         this.getChannelMessages();
                         resolve(r_messages);
+                        if (r_messages.length === 100) {
+                            this.getOldMessages(length + 100);
+                        }
                     });
                 }
                 catch (e) {

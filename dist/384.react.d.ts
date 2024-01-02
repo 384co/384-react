@@ -71,7 +71,7 @@ declare class ChannelStore implements ChannelStoreType {
 	get owner(): boolean;
 	set owner(owner: boolean);
 	getStorageAmount: () => any;
-	getOldMessages: (length: number | undefined) => Promise<unknown>;
+	getOldMessages: (length?: number) => Promise<unknown>;
 	replyEncryptionKey: (recipientPubkey: string) => Promise<CryptoKey>;
 	sendMessage: (body: {
 		[key: string]: any;

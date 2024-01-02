@@ -27,7 +27,7 @@ export interface ChannelStoreType {
     getOldMessages: (length: number | undefined) => Promise<unknown>;
     getStorageAmount: () => Promise<unknown>;
     replyEncryptionKey: (recipientPubkey: string) => Promise<unknown>;
-    sendMessage: (body: {[key: string]: any},  message?: string) => Promise<unknown>;
+    sendMessage: (body: { [key: string]: any }, message?: string) => Promise<unknown>;
     lock: () => Promise<unknown>;
     create: (secret: string) => Promise<unknown>;
     connect: (messageCallback?: ((...data: any[]) => void) | undefined) => Promise<unknown>;
@@ -36,7 +36,7 @@ export interface ChannelStoreType {
 
 // export type ChannelStoreTypeAlias = ChannelStoreType;
 
-export class ChannelStore implements ChannelStoreType{
+export class ChannelStore implements ChannelStoreType {
     private _id: any;
     private _alias: any;
     private _status = 'CLOSED'
@@ -369,21 +369,24 @@ export class ChannelStore implements ChannelStoreType{
         return this._socket?.api.getStorageLimit()
     }
 
-    getOldMessages = (length: number | undefined) => {
+    getOldMessages = (length: number = 0) => {
         return new Promise((resolve, reject) => {
             if (!this._socket) throw new Error("no socket")
             try {
                 this._socket.api.getOldMessages(length).then((r_messages: Array<__.SnackabraTypes.ChannelMessage>) => {
-                    console.log("==== got these old messages:")
+                    console.log("==== got these old messages:", r_messages.length);
                     // this.messages = r_messages
                     for (let x in r_messages) {
-                        let m = r_messages[x]
-                        this.receiveMessage(m)
+                        let m = r_messages[x];
+                        this.receiveMessage(m);
                     }
                     this.save();
-                    this.getChannelMessages()
+                    this.getChannelMessages();
                     resolve(r_messages);
-                });
+                    if (r_messages.length === 100) {
+                        this.getOldMessages(length + 100);
+                    }
+                })
             } catch (e) {
                 reject(e)
             }
@@ -397,11 +400,11 @@ export class ChannelStore implements ChannelStoreType{
         return Crypto.deriveKey(this._socket.keys.privateKey, await Crypto.importKey("jwk", JSON.parse(recipientPubkey), "ECDH", true, []), "AES", false, ["encrypt", "decrypt"])
     }
 
-    sendMessage = (body: {[key: string]: any},  message?: string) => {
+    sendMessage = (body: { [key: string]: any }, message?: string) => {
         if (!this._socket) throw new Error("no socket")
-            const SBM = new SB.SBMessage(this._socket, message ? message : '') as any
-            SBM.contents = body
-            return this._socket.send(SBM);
+        const SBM = new SB.SBMessage(this._socket, message ? message : '') as any
+        SBM.contents = body
+        return this._socket.send(SBM);
     }
 
     // This isnt in the the jslib atm

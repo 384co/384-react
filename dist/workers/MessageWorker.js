@@ -195,6 +195,11 @@ export default () => {
             message.createdAt = getDateTimeFromTimestampPrefix(message.timestampPrefix);
             add(message._id, message);
             console.log('addMessage', message);
+            try {
+                console.log(JSON.parse(message.text));
+            }
+            catch (e) {
+            }
             port.postMessage({ error: false, status: 'ok', data: message, method: 'addMessage', args: args, channel_id: channel_id });
         }
         catch (e) {

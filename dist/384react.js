@@ -882,10 +882,10 @@ var require_lodash = __commonJS({
               index += dir;
               var iterIndex = -1, value = array2[index];
               while (++iterIndex < iterLength) {
-                var data = iteratees[iterIndex], iteratee2 = data.iteratee, type = data.type, computed3 = iteratee2(value);
+                var data = iteratees[iterIndex], iteratee2 = data.iteratee, type = data.type, computed4 = iteratee2(value);
                 if (type == LAZY_MAP_FLAG) {
-                  value = computed3;
-                } else if (!computed3) {
+                  value = computed4;
+                } else if (!computed4) {
                   if (type == LAZY_FILTER_FLAG) {
                     continue outer;
                   } else {
@@ -1271,17 +1271,17 @@ var require_lodash = __commonJS({
           }
           outer:
             while (++index < length) {
-              var value = array2[index], computed3 = iteratee2 == null ? value : iteratee2(value);
+              var value = array2[index], computed4 = iteratee2 == null ? value : iteratee2(value);
               value = comparator || value !== 0 ? value : 0;
-              if (isCommon && computed3 === computed3) {
+              if (isCommon && computed4 === computed4) {
                 var valuesIndex = valuesLength;
                 while (valuesIndex--) {
-                  if (values2[valuesIndex] === computed3) {
+                  if (values2[valuesIndex] === computed4) {
                     continue outer;
                   }
                 }
                 result2.push(value);
-              } else if (!includes2(values2, computed3, comparator)) {
+              } else if (!includes2(values2, computed4, comparator)) {
                 result2.push(value);
               }
             }
@@ -1301,8 +1301,8 @@ var require_lodash = __commonJS({
           var index = -1, length = array2.length;
           while (++index < length) {
             var value = array2[index], current = iteratee2(value);
-            if (current != null && (computed3 === undefined2 ? current === current && !isSymbol(current) : comparator(current, computed3))) {
-              var computed3 = current, result2 = value;
+            if (current != null && (computed4 === undefined2 ? current === current && !isSymbol(current) : comparator(current, computed4))) {
+              var computed4 = current, result2 = value;
             }
           }
           return result2;
@@ -1407,18 +1407,18 @@ var require_lodash = __commonJS({
           var index = -1, seen = caches2[0];
           outer:
             while (++index < length && result2.length < maxLength) {
-              var value = array2[index], computed3 = iteratee2 ? iteratee2(value) : value;
+              var value = array2[index], computed4 = iteratee2 ? iteratee2(value) : value;
               value = comparator || value !== 0 ? value : 0;
-              if (!(seen ? cacheHas(seen, computed3) : includes2(result2, computed3, comparator))) {
+              if (!(seen ? cacheHas(seen, computed4) : includes2(result2, computed4, comparator))) {
                 othIndex = othLength;
                 while (--othIndex) {
                   var cache2 = caches2[othIndex];
-                  if (!(cache2 ? cacheHas(cache2, computed3) : includes2(arrays[othIndex], computed3, comparator))) {
+                  if (!(cache2 ? cacheHas(cache2, computed4) : includes2(arrays[othIndex], computed4, comparator))) {
                     continue outer;
                   }
                 }
                 if (seen) {
-                  seen.push(computed3);
+                  seen.push(computed4);
                 }
                 result2.push(value);
               }
@@ -1721,8 +1721,8 @@ var require_lodash = __commonJS({
             seen = arrayMap(array2, baseUnary(iteratee2));
           }
           while (++index < length) {
-            var fromIndex = 0, value = values2[index], computed3 = iteratee2 ? iteratee2(value) : value;
-            while ((fromIndex = indexOf2(seen, computed3, fromIndex, comparator)) > -1) {
+            var fromIndex = 0, value = values2[index], computed4 = iteratee2 ? iteratee2(value) : value;
+            while ((fromIndex = indexOf2(seen, computed4, fromIndex, comparator)) > -1) {
               if (seen !== array2) {
                 splice2.call(seen, fromIndex, 1);
               }
@@ -1850,8 +1850,8 @@ var require_lodash = __commonJS({
           var low = 0, high = array2 == null ? low : array2.length;
           if (typeof value == "number" && value === value && high <= HALF_MAX_ARRAY_LENGTH) {
             while (low < high) {
-              var mid = low + high >>> 1, computed3 = array2[mid];
-              if (computed3 !== null && !isSymbol(computed3) && (retHighest ? computed3 <= value : computed3 < value)) {
+              var mid = low + high >>> 1, computed4 = array2[mid];
+              if (computed4 !== null && !isSymbol(computed4) && (retHighest ? computed4 <= value : computed4 < value)) {
                 low = mid + 1;
               } else {
                 high = mid;
@@ -1869,7 +1869,7 @@ var require_lodash = __commonJS({
           value = iteratee2(value);
           var valIsNaN = value !== value, valIsNull = value === null, valIsSymbol = isSymbol(value), valIsUndefined = value === undefined2;
           while (low < high) {
-            var mid = nativeFloor((low + high) / 2), computed3 = iteratee2(array2[mid]), othIsDefined = computed3 !== undefined2, othIsNull = computed3 === null, othIsReflexive = computed3 === computed3, othIsSymbol = isSymbol(computed3);
+            var mid = nativeFloor((low + high) / 2), computed4 = iteratee2(array2[mid]), othIsDefined = computed4 !== undefined2, othIsNull = computed4 === null, othIsReflexive = computed4 === computed4, othIsSymbol = isSymbol(computed4);
             if (valIsNaN) {
               var setLow = retHighest || othIsReflexive;
             } else if (valIsUndefined) {
@@ -1881,7 +1881,7 @@ var require_lodash = __commonJS({
             } else if (othIsNull || othIsSymbol) {
               setLow = false;
             } else {
-              setLow = retHighest ? computed3 <= value : computed3 < value;
+              setLow = retHighest ? computed4 <= value : computed4 < value;
             }
             if (setLow) {
               low = mid + 1;
@@ -1894,9 +1894,9 @@ var require_lodash = __commonJS({
         function baseSortedUniq(array2, iteratee2) {
           var index = -1, length = array2.length, resIndex = 0, result2 = [];
           while (++index < length) {
-            var value = array2[index], computed3 = iteratee2 ? iteratee2(value) : value;
-            if (!index || !eq2(computed3, seen)) {
-              var seen = computed3;
+            var value = array2[index], computed4 = iteratee2 ? iteratee2(value) : value;
+            if (!index || !eq2(computed4, seen)) {
+              var seen = computed4;
               result2[resIndex++] = value === 0 ? 0 : value;
             }
           }
@@ -1942,22 +1942,22 @@ var require_lodash = __commonJS({
           }
           outer:
             while (++index < length) {
-              var value = array2[index], computed3 = iteratee2 ? iteratee2(value) : value;
+              var value = array2[index], computed4 = iteratee2 ? iteratee2(value) : value;
               value = comparator || value !== 0 ? value : 0;
-              if (isCommon && computed3 === computed3) {
+              if (isCommon && computed4 === computed4) {
                 var seenIndex = seen.length;
                 while (seenIndex--) {
-                  if (seen[seenIndex] === computed3) {
+                  if (seen[seenIndex] === computed4) {
                     continue outer;
                   }
                 }
                 if (iteratee2) {
-                  seen.push(computed3);
+                  seen.push(computed4);
                 }
                 result2.push(value);
-              } else if (!includes2(seen, computed3, comparator)) {
+              } else if (!includes2(seen, computed4, comparator)) {
                 if (seen !== result2) {
-                  seen.push(computed3);
+                  seen.push(computed4);
                 }
                 result2.push(value);
               }
@@ -1983,8 +1983,8 @@ var require_lodash = __commonJS({
           if (result2 instanceof LazyWrapper) {
             result2 = result2.value();
           }
-          return arrayReduce(actions, function(result3, action2) {
-            return action2.func.apply(action2.thisArg, arrayPush([result3], action2.args));
+          return arrayReduce(actions, function(result3, action3) {
+            return action3.func.apply(action3.thisArg, arrayPush([result3], action3.args));
           }, result2);
         }
         function baseXor(arrays, iteratee2, comparator) {
@@ -7169,10 +7169,10 @@ function clearObserving(derivation) {
   }
   derivation.dependenciesState_ = IDerivationState_.NOT_TRACKING_;
 }
-function untracked(action2) {
+function untracked(action3) {
   var prev = untrackedStart();
   try {
-    return action2();
+    return action3();
   } finally {
     untrackedEnd(prev);
   }
@@ -7654,7 +7654,7 @@ var autoActionBoundAnnotation = /* @__PURE__ */ createActionAnnotation(AUTOACTIO
   bound: true
 });
 function createActionFactory(autoAction2) {
-  var res = function action2(arg1, arg2) {
+  var res = function action3(arg1, arg2) {
     if (isFunction(arg1)) {
       return createAction(arg1.name || DEFAULT_ACTION_NAME, arg1, autoAction2);
     }
@@ -8044,13 +8044,13 @@ function getAtomFromArgs(args) {
       return getAtom(args[0], args[1]);
   }
 }
-function transaction(action2, thisArg) {
+function transaction(action3, thisArg) {
   if (thisArg === void 0) {
     thisArg = void 0;
   }
   startBatch();
   try {
-    return action2.apply(thisArg);
+    return action3.apply(thisArg);
   } finally {
     endBatch();
   }
@@ -10078,7 +10078,7 @@ if (typeof __MOBX_DEVTOOLS_GLOBAL_HOOK__ === "object") {
   });
 }
 
-// node_modules/lib384/dist/384.esm.js
+// ../lib384/dist/384.esm.js
 var __defProp2 = Object.defineProperty;
 var __getOwnPropDesc2 = Object.getOwnPropertyDescriptor;
 var __decorateClass2 = (decorators, target, key, kind) => {
@@ -10559,7 +10559,13 @@ function isSBKey(key) {
   return key && Object.values(KeyPrefix).includes(key.prefix);
 }
 var SBCrypto = class {
+  /************************************************************************************/
   #knownKeys = /* @__PURE__ */ new Map();
+  /**
+   * Converts a SBKey to a JsonWebKey, if the input is already a JsonWebKey
+   * then it's returned as is.
+   * 
+   */
   SBKeyToJWK(key) {
     if (!isSBKey(key))
       return key;
@@ -10598,6 +10604,11 @@ var SBCrypto = class {
       }
     }
   }
+  /**
+   * Converts a JsonWebKey to a SBKey, if the input is already a SBKey
+   * then it's returned as is. If the input is not well-formed, then
+   * we return undefined. 
+   */
   JWKToSBKey(key) {
     if (!key)
       return void 0;
@@ -10626,6 +10637,27 @@ var SBCrypto = class {
     }
     return void 0;
   }
+  /**
+   * Here we convert SBKey to a serialized string, it's a single
+   * string that begins with the four-character identifying prefix,
+   * and then just a string. The way that string is encoded is as
+   * follows:
+   * 
+   * - AES256 key: it is 43x base64, so 256 bits, so can be base62 encoded straight up
+   * 
+   * - private key: this is x, y, and d, each are 384 bits, so that's a total 
+   *   of 768 bis, which can be encoded as three strings of 43 base62 characters.
+   *   BUT we need to convert all of them to BINARY, and then concatenate them
+   *   as binary, then split that to three equal-length buffers (32 bytes) and
+   *   then convert each to base62.
+   * 
+   * - public key: this is x and y, each are 384 bits, and we need to figure out a 
+   *   way to encode as a32 (base62) - remember we can only encode a32 in chunks of 256 bits.
+   *   perhaps we do as above but append 128 "zero" bits to it, for a total of 1280
+   *   bits, which we can split into four chunks of 256 bits, and do as above.
+   *   
+   *
+   */
   SBKeyToString(key) {
     const prefix = key.prefix;
     switch (prefix) {
@@ -10715,6 +10747,12 @@ var SBCrypto = class {
       return void 0;
     }
   }
+  /**
+   * SBCrypto.addKnownKey()
+   * 
+   * Adds any key to the list of known keys; if it's known
+   * but only as a public key, then it will be 'upgraded'.
+   */
   async addKnownKey(key) {
     if (!key)
       return;
@@ -10730,6 +10768,7 @@ var SBCrypto = class {
       } else {
         const newInfo = {
           hash,
+          // also the map hash
           pubKeyJson: key,
           key: await sbCrypto.importKey("jwk", key, "ECDH", true, ["deriveKey"])
         };
@@ -10740,8 +10779,10 @@ var SBCrypto = class {
       const hash = key.hash;
       const newInfo = {
         hash,
+        // also the map hash
         pubKeyJson: key.exportable_pubKey,
         key: key.privateKey
+        // exists iff it's a private key
       };
       this.#knownKeys.set(hash, newInfo);
     } else if (key instanceof CryptoKey) {
@@ -10751,8 +10792,10 @@ var SBCrypto = class {
       if (!this.#knownKeys.has(hash)) {
         const newInfo = {
           hash,
+          // also the map hash
           pubKeyJson: await sbCrypto.exportKey("jwk", key),
           key
+          // todo: could be public
         };
         this.#knownKeys.set(hash, newInfo);
       }
@@ -10760,9 +10803,24 @@ var SBCrypto = class {
       throw new Error("addKnownKey() - invalid key type (must be string or SB384-derived)");
     }
   }
+  /**
+   * SBCrypto.lookupKeyGlobal()
+   * 
+   * Given any sort of SB384Hash, returns the corresponding known key, if any
+   */
   lookupKeyGlobal(hash) {
     return this.#knownKeys.get(hash);
   }
+  /**
+   * Hashes and splits into two (h1 and h1) signature of data, h1
+   * is used to request (salt, iv) pair and then h2 is used for
+   * encryption (h2, salt, iv).
+   * 
+   * Transitioning to internal binary format
+   *
+   * @param buf blob of data to be stored
+   *
+   */
   generateIdKey(buf) {
     return new Promise((resolve, reject) => {
       try {
@@ -10779,6 +10837,9 @@ var SBCrypto = class {
       }
     });
   }
+  /**
+   * Extracts (generates) public key from a private key.
+   */
   extractPubKey(privateKey) {
     try {
       const pubKey = { ...privateKey };
@@ -10794,6 +10855,7 @@ var SBCrypto = class {
       return null;
     }
   }
+  /** @private */
   async #generateHash(rawBytes) {
     try {
       const MAX_REHASH_ITERATIONS = 160;
@@ -10814,6 +10876,8 @@ var SBCrypto = class {
       throw new Error(`sb384Hash() exception (${e})`);
     }
   }
+  // nota bene this does, and should, permanently be backwards compatible.
+  /** @private */
   async #testHash(channelBytes, channel_id) {
     const MAX_REHASH_ITERATIONS = 160;
     let count = 0;
@@ -10826,6 +10890,12 @@ var SBCrypto = class {
     }
     return true;
   }
+  /**
+   * SBCrypto.sb384Hash()
+   * 
+   * Takes a JsonWebKey and returns a SB384Hash. If there's a problem, returns undefined.
+   * 
+   */
   async sb384Hash(key) {
     if (key instanceof CryptoKey)
       key = await this.exportKey("jwk", key).catch(() => {
@@ -10842,6 +10912,21 @@ var SBCrypto = class {
       throw new Error("sb384Hash() - invalid JsonWebKey (missing x and/or y)");
     }
   }
+  /**
+   * SBCrypto.compareHashWithKey()
+   * 
+   * Checks if an existing SB384Hash is 'compatible' with a given key.
+   * 
+   * Note that you CAN NOT have a hash, and a key, generate a hash
+   * from that key, and then compare the two. The hash generation per
+   * se will be deterministic and specific AT ANY POINT IN TIME,
+   * but may change over time, and this comparison function will 
+   * maintain ability to compare over versions.
+   * 
+   * For example, this comparison will accept a simple straight
+   * b64-encoded hash without iteration or other processing.
+   * 
+   */
   async compareHashWithKey(hash, key) {
     if (!hash || !key)
       return false;
@@ -10863,9 +10948,17 @@ var SBCrypto = class {
     const channelBytes = _appendBuffer(xBytes, yBytes);
     return await this.#testHash(channelBytes, hash);
   }
+  /**
+   * 'Compare' two channel IDs. Note that this is not constant time.
+   */
   async verifyChannelId(owner_key, channel_id) {
     return await this.compareHashWithKey(channel_id, owner_key);
   }
+  /**
+   * SBCrypto.generatekeys()
+   *
+   * Generates standard ``ECDH`` keys using ``P-384``.
+   */
   async generateKeys() {
     try {
       return await crypto.subtle.generateKey({ name: "ECDH", namedCurve: "P-384" }, true, ["deriveKey"]);
@@ -10873,6 +10966,11 @@ var SBCrypto = class {
       throw new Error("generateKeys() exception (" + e + ")");
     }
   }
+  /**
+   * SBCrypto.importKey()
+   *
+   * Import keys
+   */
   async importKey(format, key, type, extractable, keyUsages) {
     try {
       let importedKey;
@@ -10903,6 +11001,13 @@ var SBCrypto = class {
       throw new Error("importKey() exception (" + e + ")");
     }
   }
+  /**
+   * SBCrypto.exportKey()
+   * 
+   * Export key; note that if there's an issue, this will return undefined.
+   * That can happen normally if for example the key is restricted (and
+   * not extractable).
+   */
   async exportKey(format, key) {
     return await crypto.subtle.exportKey(format, key).catch(() => {
       if (DBG)
@@ -10910,6 +11015,11 @@ var SBCrypto = class {
       return void 0;
     });
   }
+  /**
+   * SBCrypto.deriveKey()
+   *
+   * Derive key. Takes a private and public key, and returns a Promise to a cryptoKey for 1:1 communication.
+   */
   deriveKey(privateKey, publicKey, type, extractable, keyUsages) {
     return new Promise(async (resolve, reject) => {
       const keyAlgorithms = {
@@ -10991,6 +11101,11 @@ var SBCrypto = class {
       }
     });
   }
+  /**
+   * SBCrypto.sign()
+   *
+   * Sign
+   */
   sign(secretKey, contents) {
     return new Promise(async (resolve, reject) => {
       try {
@@ -11008,6 +11123,11 @@ var SBCrypto = class {
       }
     });
   }
+  /**
+   * SBCrypto.verify()
+   *
+   * Verify signature.
+   */
   verify(verifyKey, sign, contents) {
     return new Promise((resolve, reject) => {
       try {
@@ -11024,17 +11144,45 @@ var SBCrypto = class {
       }
     });
   }
+  /**
+   * Standardized 'str2ab()' function, string to array buffer.
+   * This assumes on byte per character.
+   *
+   * @param {string} string
+   * @return {Uint8Array} buffer
+   */
   str2ab(string) {
     return new TextEncoder().encode(string);
   }
+  /**
+   * Standardized 'ab2str()' function, array buffer to string.
+   * This assumes one byte per character.
+   *
+   * @param {Uint8Array} buffer
+   * @return {string} string
+   */
   ab2str(buffer) {
     return new TextDecoder("utf-8").decode(buffer);
   }
+  /**
+   * SBCrypto.compareKeys()
+   *
+   * Compare JSON keys, true if the 'same', false if different. We consider
+   * them "equal" if both have 'x' and 'y' properties and they are the same.
+   * (Which means it doesn't care about which or either being public or private)
+   */
   compareKeys(key1, key2) {
     if (key1 != null && key2 != null && typeof key1 === "object" && typeof key2 === "object")
       return key1["x"] === key2["x"] && key1["y"] === key2["y"];
     return false;
   }
+  /**
+   * SBCrypto.lookupKey()
+   *
+   * Uses compareKeys() to check for presense of a key in a list of keys.
+   * Returns index of key if found, -1 if not found.
+   * 
+   */
   lookupKey(key, array2) {
     for (let i = 0; i < array2.length; i++)
       if (sbCrypto.compareKeys(key, array2[i]))
@@ -11049,6 +11197,7 @@ var SBCrypto = class {
         sbCrypto.importKey("jwk", jsonParseWrapper(keyStrings.encryptionKey, "L2250"), "AES", false, ["encrypt", "decrypt"]),
         sbCrypto.importKey("jwk", jsonParseWrapper(keyStrings.signKey, "L2251"), "ECDH", true, ["deriveKey"]),
         sbCrypto.importKey("jwk", sbCrypto.extractPubKey(jsonParseWrapper(keyStrings.signKey, "L2252")), "ECDH", true, [])
+        // this.identity!.privateKey // we know we have id by now
       ]).then(async (v) => {
         if (DBG)
           console.log("++++++++ readyPromise() processed first batch of keys");
@@ -11061,6 +11210,7 @@ var SBCrypto = class {
           ownerPubKeyX: ownerKeyParsed.x,
           encryptionKey,
           signKey,
+          // channelSignKey: channelSignKey,
           publicSignKey
         });
       }).catch((e) => {
@@ -11148,18 +11298,21 @@ function ExceptionReject(target, _propertyKey, descriptor) {
 var sbCrypto = new SBCrypto();
 var SBKnownServers = [
   {
+    // local servers
     channel_server: "http://localhost:3845",
     channel_ws: "ws://localhost:3845",
     storage_server: "http://localhost:3843",
     shard_server: "http://localhost:3841"
   },
   {
+    // Preview / Development Servers
     channel_server: "https://channel.384.dev",
     channel_ws: "wss://channel.384.dev",
     storage_server: "https://storage.384.dev",
     shard_server: "https://shard.3.8.4.land"
   },
   {
+    // This is both "384.chat" (production) and "sn.ac"
     channel_server: "https://r.384co.workers.dev",
     channel_ws: "wss://r.384co.workers.dev",
     storage_server: "https://s.384co.workers.dev"
@@ -11177,10 +11330,30 @@ var SB384 = class {
   ready;
   sb384Ready;
   #SB384ReadyFlag = false;
+  // must be named <class>ReadyFlag
   #exportable_pubKey;
   #exportable_privateKey;
   #privateKey;
   #hash;
+  // generic 'identifier' in the SB universe
+  /**
+   * Basic (core) capability object in SB.
+   *
+   * Note that all the getters below will throw an exception if the
+   * corresponding information is not ready.
+   *
+   * Like most SB classes, SB384 follows the "ready template" design
+   * pattern: the object is immediately available upon creation,
+   * but isn't "ready" until it says it's ready. See `Channel Class`_
+   * example below. Also see Design Note [4]_.
+   * 
+   * { @link https://snackabra.io/jslib.html#dn-004-the-ready-pattern }
+   *
+   * @param key a jwk with which to create identity; if not provided,
+   * it will 'mint' (generate) them randomly, in other words it will
+   * default to creating a new identity ("384").
+   *
+   */
   constructor(key = null) {
     this.ready = new Promise(async (resolve, reject) => {
       try {
@@ -11268,6 +11441,8 @@ var SBMessage = class {
   #sendToPubKey;
   [SB_MESSAGE_SYMBOL] = true;
   MAX_SB_BODY_SIZE = 64 * 1024 * 1.5;
+  // allow for base64 overhead plus extra
+  /* SBMessage */
   constructor(channel2, bodyParameter = "", sendToJsonWebKey) {
     if (typeof bodyParameter === "string") {
       this.contents = { encrypted: false, isVerfied: false, contents: bodyParameter, sign: "", image: "", imageMetaData: {} };
@@ -11319,6 +11494,11 @@ var SBMessage = class {
   get sendToPubKey() {
     return this.#sendToPubKey;
   }
+  /**
+   * SBMessage.send()
+   *
+   * @param {SBMessage} message - the message object to send
+   */
   send() {
     return new Promise((resolve, reject) => {
       this.ready.then(() => {
@@ -11337,20 +11517,55 @@ __decorateClass2([
   Ready
 ], SBMessage.prototype, "encryptionKey", 1);
 var Channel = class extends SB384 {
+  /**
+   * Channel Class
+   * 
+   * This is the main work horse for channels. However, it is ABSTRACT,
+   * meaning you need a 'concrete' class to use it.
+   * 
+   * Currently you have two options:
+   * 
+   * You can create a ChannelEndpoint object. That can do everything against
+   * a channel except send/receive messages synchronously.
+   * 
+   * The other option is ChannelSocket, which does everything ChannelEndpoint
+   * does, but ALSO connects with a web socket.
+   * 
+   * So unless you're actually connecting with intent on interactive, fast
+   * messaging, an endpoint is sufficient. In fact, UNLESS you are going to
+   * do send/receive, you should use ChannelEndpoint, not ChannelSocket.
+   * 
+   * In our current thinking, 'Channel' captures pretty much everything, 
+   * except how you want (instant) messaging to be hooked up. So for example, our
+   * next class might be 'ChannelP2P', which would be setting up webrtc
+   * data channel connections in a mesh.
+   * 
+   * Note that you don't need to worry about what API calls involve race
+   * conditions and which don't, jslib will do that for you.
+   * 
+   * @param Snackabra - server to join
+   * @param JsonWebKey - key to use to join (optional)
+   * @param string - the <a href="../glossary.html#term-channel-name">Channel Name</a> to find on that server (optional)
+   * 
+   */
+  // ready: Promise<Channel>
   channelReady;
   #ChannelReadyFlag = false;
+  // must be named <class>ReadyFlag
   #sbServer;
   motd = "";
   locked = false;
   owner = false;
   admin = false;
   adminData;
+  // TODO: make into getter
   verifiedGuest = false;
   userName = "";
   #channelKeys;
   #channelSignKey;
   #channelId;
   #cursor = "";
+  // last (oldest) message key seen
   #channelApi = "";
   #channelServer = "";
   constructor(sbServer, key, channelId) {
@@ -11388,6 +11603,7 @@ var Channel = class extends SB384 {
       });
     });
   }
+  /** @private */
   async #setKeys(k) {
     this.#channelKeys = k;
     if (DBG) {
@@ -11405,6 +11621,7 @@ var Channel = class extends SB384 {
       ["sign", "verify"]
     );
   }
+  /** @private */
   async #loadKeys(keyStrings) {
     if (DBG) {
       console.log("loading keys:");
@@ -11430,6 +11647,10 @@ var Channel = class extends SB384 {
   get channelSignKey() {
     return this.#channelSignKey;
   }
+  // @Memoize @Ready get capacity() { return this.#capacity }
+  /**
+   * Channel.getLastMessageTimes
+   */
   getLastMessageTimes() {
     return new Promise((resolve, reject) => {
       SBFetch(this.#channelApi + "/getLastMessageTimes", {
@@ -11447,6 +11668,15 @@ var Channel = class extends SB384 {
       });
     });
   }
+  /**
+   * Channel.getOldMessages
+   * 
+   * Will return most recent messages from the channel.
+   * 
+   * @param currentMessagesLength - number to fetch (default 100)
+   * @param paginate - if true, will paginate from last request (default false)
+   *
+   */
   getOldMessages(currentMessagesLength = 100, paginate = false) {
     return new Promise(async (resolve, reject) => {
       if (!this.channelId) {
@@ -11469,14 +11699,20 @@ var Channel = class extends SB384 {
           reject(new Error("Network response was not OK"));
         return response.json();
       }).then((messages) => {
-        if (DBG) {
+        if (DBG)
           console.log("getOldMessages");
+        if (DBG)
           console.log(messages);
+        const keys = Object.keys(messages);
+        if (DBG)
+          console.log("keys:", keys);
+        let firstMessage = keys[0];
+        if (DBG)
+          console.log("firstMessage:", firstMessage);
+        if (firstMessage) {
+          this.#cursor = firstMessage;
         }
         Promise.all(Object.keys(messages).filter((v) => messages[v].hasOwnProperty("encrypted_contents")).map((v) => deCryptChannelMessage(v, messages[v].encrypted_contents, this.#channelKeys))).then((unfilteredDecryptedMessageArray) => unfilteredDecryptedMessageArray.filter((v) => Boolean(v))).then((decryptedMessageArray) => {
-          let lastMessage = decryptedMessageArray[decryptedMessageArray.length - 1];
-          if (lastMessage)
-            this.#cursor = lastMessage._id || lastMessage.id || "";
           if (DBG2)
             console.log(decryptedMessageArray);
           resolve(decryptedMessageArray);
@@ -11649,6 +11885,9 @@ var Channel = class extends SB384 {
   ownerKeyRotation() {
     throw new Error("ownerKeyRotation() replaced by new budd() approach");
   }
+  /**
+   * returns a storage token (promise); basic consumption of channel budget
+   */
   getStorageToken(size) {
     return new Promise((resolve, reject) => {
       this.#callApi(`/storageRequest?size=${size}`).then((storageTokenReq) => {
@@ -11688,6 +11927,11 @@ var Channel = class extends SB384 {
       }
     });
   }
+  // // currently not used by webclient, so these are not hooked up
+  // notifications() { }
+  // getPubKeys() { }
+  // ownerUnread() { }
+  // registerDevice() { }
 };
 __decorateClass2([
   Memoize,
@@ -11771,19 +12015,64 @@ var ChannelSocket = class extends Channel {
   ready;
   channelSocketReady;
   #ChannelSocketReadyFlag = false;
+  // must be named <class>ReadyFlag
   #ws;
   #sbServer;
   #onMessage = noMessageHandler;
+  // the user message handler
   #ack = /* @__PURE__ */ new Map();
   #traceSocket = false;
+  // should not be true in production
   #resolveFirstMessage = () => {
     _sb_exception("L2461", "this should never be called");
   };
   #firstMessageEventHandlerReference = (_e) => {
     _sb_exception("L2462", "this should never be called");
   };
+  /**
+   * 
+   * ChannelSocket constructor
+   * 
+   * This extends Channel. Use this instead of ChannelEndpoint if you
+   * are going to be sending/receiving messages.
+   * 
+   * You send by calling channel.send(msg: SBMessage | string), i.e.
+   * you can send a quick string.
+   * 
+   * You can set your message handler upon creation, or later by using
+   * channel.onMessage = (m: ChannelMessage) => { ... }.
+   * 
+   * This implementation uses websockeds to connect all participating
+   * clients through a single servlet (somewhere), with very fast
+   * forwarding.
+   * 
+   * You don't need to worry about managing resources, like closing it,
+   * or checking if it's open. It will close based on server behavior,
+   * eg it's up to the server to close the connection based on inactivity.
+   * The ChannelSocket will re-open if you try to send against a closed
+   * connection. You can check status with channelSocket.status if you
+   * like, but it shouldn't be necessary.
+   * 
+   * Messages are delivered as type ChannelMessage. Usually they are
+   * simple blobs of data that are encrypted: the ChannelSocket will
+   * decrypt them for you. It also handles a simple ack/nack mechanism
+   * with the server transparently.
+   * 
+   * Be aware that if ChannelSocket doesn't know how to handle a certain
+   * message, it will generally just forward it to you as-is. 
+   * 
+   * @param sbServer 
+   * @param onMessage 
+   * @param key 
+   * @param channelId 
+   */
   constructor(sbServer, onMessage, key, channelId) {
-    super(sbServer, key, channelId);
+    super(
+      sbServer,
+      key,
+      channelId
+      /*, identity ? identity : new Identity() */
+    );
     _sb_assert(sbServer.channel_ws, "ChannelSocket(): no websocket server name provided");
     _sb_assert(onMessage, "ChannelSocket(): no onMessage handler provided");
     const url = sbServer.channel_ws + "/api/room/" + channelId + "/websocket";
@@ -11791,6 +12080,7 @@ var ChannelSocket = class extends Channel {
     this.#sbServer = sbServer;
     this.#ws = {
       url,
+      // websocket: new WebSocket(url),
       ready: false,
       closed: false,
       timeout: 2e3
@@ -11862,6 +12152,7 @@ var ChannelSocket = class extends Channel {
       }, 1e4);
     });
   }
+  /** @private */
   async #processMessage(msg) {
     let m = msg.data;
     if (this.#traceSocket) {
@@ -11927,6 +12218,7 @@ var ChannelSocket = class extends Channel {
     console.warn("WARNING: firstMessageEventHandler() called recursively (?)");
     console.warn(e);
   }
+  // we use (bound) message handlers orchestrate who handles first message (and only once)
   #firstMessageEventHandler(e) {
     if (this.#traceSocket)
       console.log("FIRST MESSAGE HANDLER CALLED");
@@ -11976,6 +12268,7 @@ var ChannelSocket = class extends Channel {
   get onMessage() {
     return this.#onMessage;
   }
+  /** Enables debug output */
   set enableTrace(b) {
     this.#traceSocket = b;
     if (b)
@@ -12123,12 +12416,14 @@ async function deCryptChannelMessage(m00, m01, keys) {
 var SBObjectHandle = class {
   version = currentSBOHVersion;
   #_type = "b";
+  // internal: these are 32-byte binary values
   #id_binary;
   #key_binary;
   #verification;
   shardServer;
   iv;
   salt;
+  // the rest are conveniences, should probably migrate to SBFileHandle
   fileName;
   dateAndTime;
   fileType;
@@ -12196,16 +12491,21 @@ var SBObjectHandle = class {
         return arrayBufferToBase642(this.#id_binary);
       },
       enumerable: false,
+      // Or false if you don't want it to be serialized
       configurable: false
+      // Allows this property to be redefined or deleted
     });
     Object.defineProperty(this, "id32", {
       get: () => {
         return arrayBufferToBase62(this.#id_binary);
       },
       enumerable: false,
+      // Or false if you don't want it to be serialized
       configurable: false
+      // Allows this property to be redefined or deleted
     });
   }
+  // same as above for key_binary
   set key_binary(value) {
     if (!value)
       throw new Error("Invalid key_binary");
@@ -12217,14 +12517,18 @@ var SBObjectHandle = class {
         return arrayBufferToBase642(this.#key_binary);
       },
       enumerable: false,
+      // Or false if you don't want it to be serialized
       configurable: false
+      // Allows this property to be redefined or deleted
     });
     Object.defineProperty(this, "key32", {
       get: () => {
         return arrayBufferToBase62(this.#key_binary);
       },
       enumerable: false,
+      // Or false if you don't want it to be serialized
       configurable: false
+      // Allows this property to be redefined or deleted
     });
   }
   set id(value) {
@@ -12250,6 +12554,7 @@ var SBObjectHandle = class {
       throw new Error("Invalid ID type");
     }
   }
+  // same as above but for key
   set key(value) {
     if (typeof value === "string") {
       if (this.version === "1") {
@@ -12273,6 +12578,9 @@ var SBObjectHandle = class {
       throw new Error("Invalid key type");
     }
   }
+  // the getter for id returns based on what version we are
+  // we stripA32() because this is also used by JSON.stringify()
+  // (unless we want to write a custom serializer ...)
   get id() {
     _sb_assert(this.#id_binary, "object handle id is undefined");
     if (this.version === "1") {
@@ -12283,6 +12591,7 @@ var SBObjectHandle = class {
       throw new Error("Invalid or missing version (internal error, should not happen)");
     }
   }
+  // same as above but for key
   get key() {
     _sb_assert(this.#key_binary, "object handle key is undefined");
     if (this.version === "1") {
@@ -12293,6 +12602,7 @@ var SBObjectHandle = class {
       throw new Error("Invalid or missing version (internal error, should not happen)");
     }
   }
+  // convenience getters - these are placeholders for type definitions
   get id64() {
     throw new Error("Invalid id_binary");
   }
@@ -12321,6 +12631,7 @@ var StorageApi = class {
   channelServer;
   shardServer;
   sbServer;
+  // constructor(server: string, channelServer: string, shardServer?: string) {
   constructor(sbServer) {
     const { storage_server, channel_server, shard_server } = sbServer;
     this.server = storage_server + "/api/v1";
@@ -12329,6 +12640,14 @@ var StorageApi = class {
       this.shardServer = shard_server;
     this.sbServer = sbServer;
   }
+  /**
+   * Pads object up to closest permitted size boundaries;
+   * currently that means a minimum of 4KB and a maximum of
+   * of 1 MB, after which it rounds up to closest MB.
+   *
+   * @param buf blob of data to be eventually stored
+   */
+  /** @private */
   #padBuf(buf) {
     const image_size = buf.byteLength;
     let _target;
@@ -12344,6 +12663,12 @@ var StorageApi = class {
       console.log("#padBuf bytes:", finalArray.slice(-4));
     return finalArray;
   }
+  /**
+   * The actual size of the object is encoded in the
+   * last 4 bytes of the buffer. This function removes
+   * all the padding and returns the actual object.
+   */
+  /** @private */
   #unpadData(data_buffer) {
     const tail = data_buffer.slice(-4);
     var _size = new DataView(tail).getUint32(0);
@@ -12358,6 +12683,7 @@ var StorageApi = class {
     }
     return data_buffer.slice(0, _size);
   }
+  /** @private */
   #getObjectKey(fileHashBuffer, _salt) {
     return new Promise((resolve, reject) => {
       try {
@@ -12370,8 +12696,10 @@ var StorageApi = class {
         ).then((keyMaterial) => {
           crypto.subtle.deriveKey({
             "name": "PBKDF2",
+            // salt: crypto.getRandomValues(new Uint8Array(16)),
             "salt": _salt,
             "iterations": 1e5,
+            // small is fine, we want it snappy
             "hash": "SHA-256"
           }, keyMaterial, { "name": "AES-GCM", "length": 256 }, true, ["encrypt", "decrypt"]).then((key) => {
             resolve(key);
@@ -12382,6 +12710,25 @@ var StorageApi = class {
       }
     });
   }
+  // // returns a storage token (promise); basic consumption of channel budget
+  // getStorageToken(roomId: SBChannelId, size: number): Promise<string> {
+  //   return new Promise((resolve, reject) => {
+  //     SBFetch(this.channelServer + stripA32(roomId) + '/storageRequest?size=' + size)
+  //       .then((r) => r.json())
+  //       .then((storageTokenReq) => {
+  //         if (storageTokenReq.hasOwnProperty('error')) reject(`storage token request error (${storageTokenReq.error})`)
+  //         resolve(JSON.stringify(storageTokenReq))
+  //       })
+  //       .catch((e) => {
+  //         const msg = `getStorageToken] storage token request failed: ${e}`
+  //         console.error(msg)
+  //         reject(msg)
+  //       });
+  //   });
+  // }
+  /** @private
+   * get "permission" to store in the form of a token
+   */
   #_allocateObject(image_id, type) {
     return new Promise((resolve, reject) => {
       SBFetch(this.server + "/storeRequest?name=" + arrayBufferToBase62(image_id) + "&type=" + type).then((r) => {
@@ -12395,6 +12742,7 @@ var StorageApi = class {
       });
     });
   }
+  // this returns a promise to the verification string  
   async #_storeObject(image, image_id, keyData, type, budgetChannel, iv, salt) {
     return new Promise(async (resolve, reject) => {
       try {
@@ -12414,6 +12762,12 @@ var StorageApi = class {
       }
     });
   }
+  /**
+   * StorageApi.storeData()
+   * 
+   * Low level of shard uploading - this needs to have all the details. You would
+   * generally not call this directly, but rather use storeData().
+   */
   storeObject(type, fileId, iv, salt, storageToken, data) {
     return new Promise((resolve, reject) => {
       if (typeof type !== "string") {
@@ -12422,6 +12776,8 @@ var StorageApi = class {
         reject("errMsg");
       }
       SBFetch(this.server + "/storeData?type=" + type + "&key=" + stripA32(fileId), {
+        // ToDo: bit of a hack in handling "a32"
+        // psm: need to clean up these types
         method: "POST",
         body: assemblePayload({
           iv,
@@ -12442,6 +12798,17 @@ var StorageApi = class {
       });
     });
   }
+  /**
+   * StorageApi.storeData
+   * 
+   * Main high level work horse: besides buffer and type of data,
+   * it only needs the roomId (channel). Assigned meta data is
+   * optional.
+   * 
+   * This will eventually call storeObject().
+   * 
+   * It is a bit outdated ... it accepts metadata for historical reasons
+   */
   storeData(buf, type, roomId, metadata) {
     return new Promise((resolve, reject) => {
       if (typeof buf === "string") {
@@ -12475,6 +12842,10 @@ var StorageApi = class {
             [SB_OBJECT_HANDLE_SYMBOL]: true,
             version: currentSBOHVersion,
             type,
+            // id: fullHash.id64,
+            // key: fullHash.key64,
+            // id: base64ToBase62(fullHash.id32),
+            // key: base64ToBase62(fullHash.key32),
             id: id32,
             key: key32,
             iv: p.iv,
@@ -12487,6 +12858,10 @@ var StorageApi = class {
       });
     });
   }
+  // for future reference:
+  //   StorageApi().storeRequest
+  // is now internal-only (#_allocateObject)
+  /** @private */
   #processData(payload, h) {
     return new Promise((resolve, reject) => {
       try {
@@ -12562,6 +12937,7 @@ var StorageApi = class {
       }
     });
   }
+  // any failure conditions returns 'null', facilitating trying multiple servers
   async #_fetchData(useServer, url, h, returnType) {
     const body = { method: "GET" };
     return new Promise(async (resolve, _reject) => {
@@ -12614,6 +12990,10 @@ var StorageApi = class {
       }
     });
   }
+  /**
+   * StorageApi().retrieveData()
+   * retrieves an object from storage
+   */
   async retrieveImage(imageMetaData, controlMessages, imageId, imageKey, imageType, imgObjVersion) {
     console.trace("retrieveImage()");
     console.log(imageMetaData);
@@ -12645,23 +13025,63 @@ var StorageApi = class {
       return { "error": "Failed to fetch data - missing control message for that image" };
     }
   }
+  /* Unused Currently
+  migrateStorage() {
+  }
+  fetchDataMigration() {
+  }
+   */
 };
 var Snackabra = class {
   #storage;
   #channel;
   #preferredServer;
   #version = version;
-  constructor(sbServer, DEBUG4 = false) {
+  /**
+  * @param args - optional object with URLs of preferred servers.
+  * 
+  * Note that 'new Snackabra()' is guaranteed synchronous. You can optionally call
+  * without a parameter in which case SB will ping known servers.
+  * 
+  *   * @example
+  * ```typescript
+  *     const sb = new Snackabra({
+  *     channel_server: 'http://localhost:3845',
+  *     channel_ws: 'ws://localhost:3845',
+  *     storage_server: 'http://localhost:3843',
+  *     shard_server: 'http://localhost:3841',
+  *     })
+  * ```
+  * 
+  * @param DEBUG - optional boolean to enable debug logging
+  */
+  constructor(sbServer, DEBUG5 = false) {
     console.warn(`==== CREATING Snackabra object generation: ${this.version} ====`);
     if (sbServer) {
       this.#preferredServer = Object.assign({}, sbServer);
       this.#storage = new StorageApi(sbServer);
-      if (DEBUG4)
+      if (DEBUG5)
         DBG = true;
       if (DBG)
         console.warn("++++ Snackabra constructor ++++ setting DBG to TRUE ++++");
     }
   }
+  /**
+   * Connects to :term:`Channel Name` on this SB config.
+   * Returns a channel socket promise right away, but it
+   * will not be ready until the ``ready`` promise is resolved.
+   * 
+   * Note that if you have a preferred server then the channel
+   * object will be returned right away, but the ``ready`` promise
+   * will still be pending. If you do not have a preferred server,
+   * then the ``ready`` promise will be resolved when at least
+   * one of the known servers is responding and ready.
+   * 
+   * @param channelName - the name of the channel to connect to
+   * @param key - optional key to use for encryption/decryption
+   * @param channelId - optional channel id to use for encryption/decryption
+   * @returns a channel object
+   */
   connect(onMessage, key, channelId) {
     if (DBG) {
       console.log("++++ Snackabra.connect() ++++");
@@ -12677,6 +13097,34 @@ var Snackabra = class {
         resolve(Promise.any(SBKnownServers.map((s) => new ChannelSocket(s, onMessage, key, channelId).ready)));
     });
   }
+  // if there's a 'preferred' (only) server then we we can return a promise right away
+  // return new Promise<ChannelSocket>((resolve, reject) => {
+  // else Promise.any(SBKnownServers.map((s) => (new ChannelSocket(s, onMessage, key, channelId))))
+  //   .then((c) => { console.log("Got channel:"); console.log(c); resolve(c.ready); })
+  //   .catch((e) => { console.log("No known servers responding to channel"); reject(e); })
+  // Promise.any(this.#preferredServer
+  //   ? [new ChannelSocket(this.#preferredServer!, onMessage, key, channelId)]
+  //   : SBKnownServers.map((s) => (new ChannelSocket(s, onMessage, key, channelId))))
+  //   .then((c) => { console.log("Got channel:"); console.log(c); resolve(c); })
+  //   .catch((e) => { console.log("No known servers responding to channel"); reject(e); })
+  /// })
+  // }
+  /**
+   * Creates a new channel. Currently uses trivial authentication.
+   * Returns a promise to a ''SBChannelHandle'' object
+   * (which includes the :term:`Channel Name`).
+   * Note that this method does not connect to the channel,
+   * it just creates (authorizes) it.
+   * 
+   * @param sbServer - the server to use
+   * @param serverSecret - the server secret (dev only)
+   * @param keys - optional keys to use for encryption/decryption
+   * @param budgetChannel - NECESSARY unless local/dev; provides a channel to pay for storage
+   * 
+   * Note that if you have a full budget channel, you can budd off it (which
+   * will take all the storage). Providing a budget channel here will allows
+   * you to create new channels when a 'guest' on some channel (for example).
+   */
   create(sbServer, serverSecretOrBudgetChannel, keys) {
     return new Promise(async (resolve, reject) => {
       try {
@@ -12713,12 +13161,21 @@ var Snackabra = class {
       }
     });
   }
+  /**
+   * Connects to a channel.
+   */
   get channel() {
     return this.#channel;
   }
+  /**
+   * Returns the storage API.
+   */
   get storage() {
     return this.#storage;
   }
+  /**
+   * Returns the crypto API.
+   */
   get crypto() {
     return sbCrypto;
   }
@@ -12756,20 +13213,10 @@ if (window.location) {
   if (DEBUG2)
     console.log("[SBServiceWorker] serverPrefix: ", serverPrefix);
 }
-var base62mi05 = "0123456789ADMRTXQjrEyWCLBdHpNufk";
+var DEBUG3 = false;
+var base62mi05 = "0123456789ADMRTxQjrEywcLBdHpNufk";
 var base622 = base62mi05;
-var base62Regex2 = new RegExp(`^[${base622}]{4}$`);
-async function generateStrongPin(extraEntropy) {
-  if (extraEntropy && extraEntropy.length > 0) {
-    throw new Error("Not supported yet");
-  }
-  const num = Math.floor(Math.random() * Math.pow(2, 19));
-  const encoded = encode(num);
-  return { num, encoded };
-}
-async function generateStrongPin16() {
-  return (await Promise.all(Array(4).fill(null).map(() => generateStrongPin()))).map((result) => result.encoded).join(" ");
-}
+var base62Regex2 = new RegExp(`[${base622}.concat(' ')]`);
 function encode(num) {
   const charMap = base622;
   if (num < 0 || num > 524287)
@@ -12783,8 +13230,51 @@ function encode(num) {
   bitsArr15[3] |= (bitsArr15[0] ^ bitsArr15[1] ^ bitsArr15[2]) & 16;
   return bitsArr15.map((val) => charMap[val]).join("");
 }
+async function _generateStrongPin(options) {
+  const { extraEntropy } = options || {};
+  let num, encoded, i = 0;
+  const hashArray = extraEntropy ? new Uint32Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(extraEntropy))) : new Uint32Array([0]);
+  const array2 = new Uint32Array(1);
+  window.crypto.getRandomValues(array2);
+  num = (array2[0] ^ hashArray[0]) & 524287;
+  encoded = encode(num);
+  if (++i > 32)
+    throw new Error("Unable to generate a strongpin after 32 attempts.");
+  return encoded;
+}
+async function generateStrongPinNN(options) {
+  let { enforceMix, setCount } = options || {};
+  let res, i = 0;
+  if (!setCount)
+    setCount = 1;
+  if (setCount < 1 || setCount > 40)
+    throw new Error("setCount must be between 1 and 40 (upper limit is arbitrary).");
+  do {
+    res = (await Promise.all(Array(setCount).fill(null).map(() => _generateStrongPin(options)))).join(" ");
+    if (++i > 32)
+      throw new Error("Unable to generate a strongpin16 after 32 attempts (should never happen even with singleton sets).");
+  } while (enforceMix && !(/[0-9]/.test(res) && /[a-z]/.test(res) && /[A-Z]/.test(res)));
+  if (DEBUG3 && enforceMix) {
+    if (i === 1) {
+      console.log(`[generateStrongPinNN] got a proper strongping right away.`);
+    } else {
+      console.log(`[generateStrongPinNN] took ${i} iterations to generate a strongpin.`);
+      console.log(`estimated (relative) entropy loss is ${(Math.log2(i) / (setCount * 19) * 100).toFixed(2)}%`);
+    }
+  }
+  return res;
+}
+async function generateStrongPin(options) {
+  let options2 = { ...options, setCount: 1 };
+  return generateStrongPinNN(options2);
+}
+async function generateStrongPin16(options) {
+  let options2 = { ...options, setCount: 4 };
+  return generateStrongPinNN(options2);
+}
 function process2(str) {
   const substitutions = {
+    // deliberately overly clear mapping
     "o": "0",
     "O": "0",
     "i": "1",
@@ -12795,26 +13285,26 @@ function process2(str) {
     "s": "5",
     "S": "5",
     "b": "6",
-    "c": "C",
-    "m": "M",
-    "P": "p",
+    "G": "6",
     "a": "9",
     "g": "9",
     "q": "9",
+    "m": "M",
     "t": "T",
-    "V": "u",
-    "v": "u",
-    "x": "X",
+    "X": "x",
     "J": "j",
     "e": "E",
-    "F": "f",
     "Y": "y",
-    "w": "W",
-    "h": "N",
+    "W": "w",
+    "C": "c",
+    "P": "p",
     "n": "N",
-    "G": "6",
-    "K": "k",
-    "U": "u"
+    "h": "N",
+    "U": "u",
+    "v": "u",
+    "V": "u",
+    "F": "f",
+    "K": "k"
   };
   let processedStr = "";
   for (let char of str)
@@ -12823,7 +13313,7 @@ function process2(str) {
 }
 function decode(encoded) {
   if (!base62Regex2.test(encoded))
-    throw new Error(`Input string contains invalid characters (${encoded}).`);
+    throw new Error(`Input string contains invalid characters (${encoded}) - use 'process()'.`);
   let bin = Array.from(encoded).map((c) => base622.indexOf(c));
   if (bin.reduce((a, b) => a ^ b) & 16)
     return null;
@@ -12836,6 +13326,7 @@ var crypto2 = {
     generate: generateStrongPin,
     generate16: generateStrongPin16,
     process: process2
+    // font: strongpinFont,
   },
   sbCrypto: new SBCrypto(),
   getRandomValues
@@ -12847,9 +13338,9 @@ for (let i = 0; i < B64_CODE.length; i++)
   reverse2[B64_CODE.charCodeAt(i)] = i;
 reverse2["-".charCodeAt(0)] = 62;
 reverse2["_".charCodeAt(0)] = 63;
-var DEBUG3 = false;
+var DEBUG4 = false;
 var version2 = "0.0.19";
-if (DEBUG3)
+if (DEBUG4)
   console.warn("==== SBFileHelper.ts v" + version2 + " loaded ====");
 window.SBFileHelperReady = new Promise((resolve, reject) => {
   window.SBFileHelperReadyResolve = resolve;
@@ -12910,17 +13401,17 @@ var IndexedKV = class {
       db: "MyDB",
       table: "default"
     };
-    this.openDataBase = (version3 = void 0) => {
+    this.openDataBase = (version4 = void 0) => {
       this.openDatabaseIterations++;
-      console.log(`Opening database ${this.options.db}... version ${version3 ? version3 : 0}`);
-      const openReq = globalThis.indexedDB.open(this.options.db, version3);
+      console.log(`Opening database ${this.options.db}... version ${version4 ? version4 : 0}`);
+      const openReq = globalThis.indexedDB.open(this.options.db, version4);
       openReq.onerror = (event) => {
         console.error("Database error: " + event);
       };
       openReq.onsuccess = () => {
         this.db = openReq.result;
-        const version4 = this.db.version;
-        console.log(`Database version: {${version4}  ${this.options.db} ${this.options.table}}`);
+        const version5 = this.db.version;
+        console.log(`Database version: {${version5}  ${this.options.db} ${this.options.table}}`);
         if (this.db.objectStoreNames.contains(this.options.table)) {
           console.log(`Object store '${this.options.table}' exists in the database.`);
           if (this.readyResolver) {
@@ -12933,7 +13424,7 @@ var IndexedKV = class {
           } else {
             this.db.close();
             console.log(`Object store '${this.options.table}' does not exist in the database. Upgrading schema...`);
-            this.openDataBase(version4 + 1);
+            this.openDataBase(version5 + 1);
           }
         }
       };
@@ -13369,6 +13860,10 @@ var MessageWorker_default = () => {
       message.createdAt = getDateTimeFromTimestampPrefix(message.timestampPrefix);
       add(message._id, message);
       console.log("addMessage", message);
+      try {
+        console.log(JSON.parse(message.text));
+      } catch (e) {
+      }
       port.postMessage({ error: false, status: "ok", data: message, method: "addMessage", args, channel_id });
     } catch (e) {
       throw new Error(`Message Worker: Error(addMessage() ): ${e.message}`);
@@ -13417,6 +13912,8 @@ var ChannelStore = class {
     this._capacity = 20;
     this._motd = "";
     this._visible = true;
+    this._getOldMessagesMap = /* @__PURE__ */ new Map();
+    this.messages = [];
     this.ChannelStoreReadyFlag = new Promise((resolve) => {
       this._ready = true;
       this.readyResolver = resolve;
@@ -13430,7 +13927,7 @@ var ChannelStore = class {
             this.alias = data.alias;
             this.key = data.key;
             this.keys = data.keys;
-            this.messages = data.messages;
+            this.messages = data.messages || [];
             this.lastSeenMessage = data.lastSeenMessage;
             this.motd = data.motd;
             this.capacity = data.capacity;
@@ -13447,7 +13944,7 @@ var ChannelStore = class {
           this._visible = true;
           if (this._socket)
             this.status = this._socket.status;
-          this.getOldMessages(0);
+          this.getOldMessages(100);
         }
       });
     };
@@ -13488,25 +13985,24 @@ var ChannelStore = class {
     this.getStorageAmount = () => {
       return this._socket?.api.getStorageLimit();
     };
-    this.getOldMessages = (length = 0) => {
-      return new Promise((resolve, reject) => {
-        if (!this._socket)
-          throw new Error("no socket");
-        try {
-          this._socket.api.getOldMessages(length).then((r_messages) => {
-            console.log("==== got these old messages:", r_messages.length);
-            for (let x in r_messages) {
-              let m = r_messages[x];
-              this.receiveMessage(m);
-            }
-            this.save();
-            this.getChannelMessages();
-            resolve(r_messages);
-          });
-        } catch (e) {
-          reject(e);
+    this.getOldMessages = async (length = 0, size = 0) => {
+      if (!this._socket)
+        throw new Error("no socket");
+      const r_messages = await this._socket.api.getOldMessages(length, true);
+      console.log("==== got these old messages:", r_messages.length);
+      for (let x in r_messages) {
+        let m = r_messages[x];
+        if (m && !this._getOldMessagesMap.has(m._id)) {
+          this._getOldMessagesMap.set(m._id, m);
+          this.receiveMessage(m);
         }
-      });
+      }
+      if (this._getOldMessagesMap.size !== size) {
+        console.log("==== getting more messages", this._getOldMessagesMap.size, size);
+        this.getChannelMessages();
+        return await this.getOldMessages(length, this._getOldMessagesMap.size);
+      }
+      return this._getOldMessagesMap;
     };
     this.replyEncryptionKey = async (recipientPubkey) => {
       if (!this._socket)
@@ -13602,7 +14098,8 @@ var ChannelStore = class {
             console.warn(e);
           }
           this.motd = c.motd || "";
-          this.getOldMessages(0);
+          this.getOldMessages(100);
+          this.getChannelMessages();
           this.readyResolver();
           await this.save();
           return this;
@@ -13617,29 +14114,13 @@ var ChannelStore = class {
     this.receiveMessage = (m, updateState = false) => {
       console.log("==== received this message:", this._id, m);
       if (updateState) {
-        this.messages = [...this._messages, m];
+        this.messages.push(m);
       }
       this.workerPort.port2.postMessage({ method: "addMessage", channel_id: this._id, message: m, args: { updateState } });
     };
     this.config = config;
     this.SB = new SB2.Snackabra(this.config);
-    makeAutoObservable(this, {
-      id: computed,
-      key: computed,
-      alias: computed,
-      socket: computed,
-      capacity: computed,
-      motd: computed,
-      owner: computed,
-      status: computed,
-      messages: computed,
-      getOldMessages: action,
-      downloadData: action,
-      replyEncryptionKey: action,
-      lock: action,
-      create: action,
-      connect: action
-    });
+    makeAutoObservable(this);
     onBecomeUnobserved(this, "messages", () => {
       console.log("messages unobserved");
       this.save();
@@ -13686,13 +14167,12 @@ var ChannelStore = class {
       console.log("message processed by worker", e.data.channel_id, this._id);
       switch (e.data.method) {
         case "addMessage":
-          console.log("adding message", e);
           if (e.data.args.updateState) {
-            this.messages = [...this._messages, e.data.data];
+            this.messages.push(e.data.data);
           }
           break;
         case "getMessages":
-          console.log(e);
+          console.log("worker returns getting messages", e);
           if (e.data.data.length !== this._messages.length) {
             this.messages = e.data.data;
           }
@@ -13733,13 +14213,6 @@ var ChannelStore = class {
   }
   set keys(keys) {
     this._keys = keys;
-    this.save();
-  }
-  get messages() {
-    return this._messages;
-  }
-  set messages(messages) {
-    this._messages = messages;
     this.save();
   }
   set alias(alias) {
@@ -14055,6 +14528,10 @@ var Snackabra_Store_default = SnackabraStore;
 var stores = {
   SB: Snackabra_Store_default
 };
+
+// src/index.ts
+var version3 = process.env.VERSION;
+console.log(`=========== mobx-snackabra-store v${version3} loading ===========`);
 export {
   stores
 };

@@ -1,4 +1,4 @@
-import { makeAutoObservable, onBecomeUnobserved, onBecomeObserved, toJS, computed, action } from "mobx";
+import { makeAutoObservable, onBecomeUnobserved, onBecomeObserved, toJS } from "mobx";
 import { orderBy } from 'lodash';
 import IndexedKV from "../utils/IndexedKV";
 import MessageWorker from "../workers/MessageWorker.js";
@@ -21,6 +21,8 @@ export class ChannelStore {
         this._capacity = 20;
         this._motd = '';
         this._visible = true;
+        this._getOldMessagesMap = new Map();
+        this.messages = [];
         this.ChannelStoreReadyFlag = new Promise((resolve) => {
             this._ready = true;
             this.readyResolver = resolve;
@@ -34,7 +36,7 @@ export class ChannelStore {
                         this.alias = data.alias;
                         this.key = data.key;
                         this.keys = data.keys;
-                        this.messages = data.messages;
+                        this.messages = data.messages || [];
                         this.lastSeenMessage = data.lastSeenMessage;
                         this.motd = data.motd;
                         this.capacity = data.capacity;
@@ -53,7 +55,7 @@ export class ChannelStore {
                     this._visible = true;
                     if (this._socket)
                         this.status = this._socket.status;
-                    this.getOldMessages(0);
+                    this.getOldMessages(100);
                 }
             });
         };
@@ -95,30 +97,24 @@ export class ChannelStore {
         this.getStorageAmount = () => {
             return this._socket?.api.getStorageLimit();
         };
-        this.getOldMessages = (length = 0) => {
-            return new Promise((resolve, reject) => {
-                if (!this._socket)
-                    throw new Error("no socket");
-                try {
-                    this._socket.api.getOldMessages(length).then((r_messages) => {
-                        console.log("==== got these old messages:", r_messages.length);
-                        // this.messages = r_messages
-                        for (let x in r_messages) {
-                            let m = r_messages[x];
-                            this.receiveMessage(m);
-                        }
-                        this.save();
-                        this.getChannelMessages();
-                        resolve(r_messages);
-                        // if (r_messages.length === 100) {
-                        //     this.getOldMessages(r_messages.length);
-                        // }
-                    });
+        this.getOldMessages = async (length = 0, size = 0) => {
+            if (!this._socket)
+                throw new Error("no socket");
+            const r_messages = await this._socket.api.getOldMessages(length, true);
+            console.log("==== got these old messages:", r_messages.length);
+            for (let x in r_messages) {
+                let m = r_messages[x];
+                if (m && !this._getOldMessagesMap.has(m._id)) {
+                    this._getOldMessagesMap.set(m._id, m);
+                    this.receiveMessage(m);
                 }
-                catch (e) {
-                    reject(e);
-                }
-            });
+            }
+            if (this._getOldMessagesMap.size !== size) {
+                console.log("==== getting more messages", this._getOldMessagesMap.size, size);
+                this.getChannelMessages();
+                return await this.getOldMessages(length, this._getOldMessagesMap.size);
+            }
+            return this._getOldMessagesMap;
         };
         this.replyEncryptionKey = async (recipientPubkey) => {
             if (!this._socket)
@@ -213,7 +209,8 @@ export class ChannelStore {
                         console.warn(e);
                     }
                     this.motd = c.motd || '';
-                    this.getOldMessages(0);
+                    this.getOldMessages(100);
+                    this.getChannelMessages();
                     this.readyResolver();
                     await this.save();
                     return this;
@@ -230,7 +227,7 @@ export class ChannelStore {
         this.receiveMessage = (m, updateState = false) => {
             console.log("==== received this message:", this._id, m);
             if (updateState) {
-                this.messages = [...this._messages, m];
+                this.messages.push(m);
             }
             this.workerPort.port2.postMessage({ method: 'addMessage', channel_id: this._id, message: m, args: { updateState: updateState } });
         };
@@ -256,23 +253,7 @@ export class ChannelStore {
         //   }
         // }
         this.SB = new SB.Snackabra(this.config);
-        makeAutoObservable(this, {
-            id: computed,
-            key: computed,
-            alias: computed,
-            socket: computed,
-            capacity: computed,
-            motd: computed,
-            owner: computed,
-            status: computed,
-            messages: computed,
-            getOldMessages: action,
-            downloadData: action,
-            replyEncryptionKey: action,
-            lock: action,
-            create: action,
-            connect: action,
-        });
+        makeAutoObservable(this);
         onBecomeUnobserved(this, "messages", () => {
             console.log('messages unobserved');
             this.save();
@@ -319,14 +300,12 @@ export class ChannelStore {
             console.log('message processed by worker', e.data.channel_id, this._id);
             switch (e.data.method) {
                 case 'addMessage':
-                    console.log('adding message', e);
                     if (e.data.args.updateState) {
-                        this.messages = [...this._messages, e.data.data];
+                        this.messages.push(e.data.data);
                     }
-                    // this.messages = [...this._messages, e.data.data]
                     break;
                 case 'getMessages':
-                    console.log(e);
+                    console.log('worker returns getting messages', e);
                     if (e.data.data.length !== this._messages.length) {
                         this.messages = e.data.data;
                     }
@@ -367,13 +346,6 @@ export class ChannelStore {
     }
     set keys(keys) {
         this._keys = keys;
-        this.save();
-    }
-    get messages() {
-        return this._messages;
-    }
-    set messages(messages) {
-        this._messages = messages;
         this.save();
     }
     set alias(alias) {

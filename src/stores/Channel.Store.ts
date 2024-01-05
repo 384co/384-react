@@ -51,6 +51,8 @@ export class ChannelStore implements ChannelStoreType {
     private _messageCallback?: CallableFunction;
     private _visible = true;
     private _savingTimout?: number;
+    private _getOldMessagesMap: Map<string, any> = new Map();
+    messages: __.ChannelMessage[] = [];
     workerPort: MessageChannel;
     readyResolver!: () => void;
     ChannelStoreReadyFlag = new Promise((resolve) => {
@@ -86,23 +88,7 @@ export class ChannelStore implements ChannelStoreType {
         // }
         this.SB = new SB.Snackabra(this.config);
 
-        makeAutoObservable(this, {
-            id: computed,
-            key: computed,
-            alias: computed,
-            socket: computed,
-            capacity: computed,
-            motd: computed,
-            owner: computed,
-            status: computed,
-            messages: computed,
-            getOldMessages: action,
-            downloadData: action,
-            replyEncryptionKey: action,
-            lock: action,
-            create: action,
-            connect: action,
-        });
+        makeAutoObservable(this);
 
         onBecomeUnobserved(this, "messages", () => {
             console.log('messages unobserved')
@@ -158,16 +144,15 @@ export class ChannelStore implements ChannelStoreType {
             console.log('message processed by worker', e.data.channel_id, this._id)
             switch (e.data.method) {
                 case 'addMessage':
-                    console.log('adding message', e)
                     if (e.data.args.updateState) {
-                        this.messages = [...this._messages, e.data.data]
+                        this.messages.push(e.data.data)
                     }
-                    // this.messages = [...this._messages, e.data.data]
                     break;
                 case 'getMessages':
-                    console.log(e)
+                    console.log('worker returns getting messages', e)
                     if (e.data.data.length !== this._messages.length) {
                         this.messages = e.data.data
+
                     }
 
                     break
@@ -190,7 +175,7 @@ export class ChannelStore implements ChannelStoreType {
                     this.alias = data.alias;
                     this.key = data.key;
                     this.keys = data.keys;
-                    this.messages = data.messages;
+                    this.messages = data.messages || [];
                     this.lastSeenMessage = data.lastSeenMessage;
                     this.motd = data.motd;
                     this.capacity = data.capacity;
@@ -209,7 +194,7 @@ export class ChannelStore implements ChannelStoreType {
                 this._visible = true;
                 if (this._socket)
                     this.status = this._socket.status
-                this.getOldMessages(0)
+                this.getOldMessages(100)
             }
         })
 
@@ -283,17 +268,8 @@ export class ChannelStore implements ChannelStoreType {
         this.save();
     }
 
-    get messages() {
-        return this._messages;
-    }
-
     getMessages = () => {
         return toJS(this._messages)
-    }
-
-    set messages(messages) {
-        this._messages = messages;
-        this.save();
     }
 
     set alias(alias) {
@@ -369,29 +345,27 @@ export class ChannelStore implements ChannelStoreType {
         return this._socket?.api.getStorageLimit()
     }
 
-    getOldMessages = (length: number = 0) => {
-        return new Promise((resolve, reject) => {
-            if (!this._socket) throw new Error("no socket")
-            try {
-                this._socket.api.getOldMessages(length).then((r_messages: Array<__.SnackabraTypes.ChannelMessage>) => {
-                    console.log("==== got these old messages:", r_messages.length);
-                    // this.messages = r_messages
-                    for (let x in r_messages) {
-                        let m = r_messages[x];
-                        this.receiveMessage(m);
-                    }
-                    this.save();
-                    this.getChannelMessages();
-                    resolve(r_messages);
-                    // if (r_messages.length === 100) {
-                    //     this.getOldMessages(r_messages.length);
-                    // }
-                })
-            } catch (e) {
-                reject(e)
-            }
+    getOldMessages = async (length: number = 0, size: number = 0): Promise<Map<string, any>> => {
+        if (!this._socket) throw new Error("no socket");
 
-        });
+        const r_messages: Array<__.SnackabraTypes.ChannelMessage> = await this._socket.api.getOldMessages(length, true);
+
+        console.log("==== got these old messages:", r_messages.length);
+        for (let x in r_messages) {
+            let m = r_messages[x];
+            if (m && !this._getOldMessagesMap.has(m._id as string)) {
+                this._getOldMessagesMap.set(m._id as string, m);
+                this.receiveMessage(m);
+            }
+        }
+        if (this._getOldMessagesMap.size !== size) {
+            console.log("==== getting more messages", this._getOldMessagesMap.size, size)
+            this.getChannelMessages();
+            return await this.getOldMessages(length, this._getOldMessagesMap.size);
+        }
+
+        return this._getOldMessagesMap;
+
     };
 
     replyEncryptionKey = async (recipientPubkey: string) => {
@@ -487,7 +461,8 @@ export class ChannelStore implements ChannelStoreType {
                 }
 
                 this.motd = c.motd || '';
-                this.getOldMessages(0);
+                this.getOldMessages(100);
+                this.getChannelMessages();
                 this.readyResolver();
                 await this.save();
                 return this
@@ -504,7 +479,7 @@ export class ChannelStore implements ChannelStoreType {
     receiveMessage = (m: __.ChannelMessage, updateState = false) => {
         console.log("==== received this message:", this._id, m)
         if (updateState) {
-            this.messages = [...this._messages, m]
+            this.messages.push(m)
         }
         this.workerPort.port2.postMessage({ method: 'addMessage', channel_id: this._id, message: m, args: { updateState: updateState } })
     };

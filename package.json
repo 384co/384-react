@@ -9,7 +9,6 @@
   "license": "GPL-3.0 license Only",
   "private": false,
   "scripts": {
-    "prebuild": "npm version minor",
     "clean": "rm -rf dist && rm -rf build && rm -rf node_modules && rm -rf cypress && rm yarn.lock",
     "start": "tsc -w ",
     "build": "VERSION=$npm_package_version rm -rf dist && rm -rf build && tsc && esbuild src/index.ts --bundle --format=esm --sourcemap --outfile=dist/384react.js && dts-bundle-generator -o dist/384.react.d.ts src/index.ts",
@@ -19,7 +18,7 @@
   },
   "dependencies": {
     "dts-bundle-generator": "^9.0.0",
-    "lib384": "git+https://github.com/384co/lib-proto-02.git",
+    "lib384": "link:../lib384",
     "lodash": "^4.17.21",
     "mobx": "^6.12.0",
     "react": "^18.2.0",

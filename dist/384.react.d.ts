@@ -394,6 +394,8 @@ declare class ChannelStore implements ChannelStoreType {
 	workerPort: MessageChannel;
 	readyResolver: () => void;
 	ChannelStoreReadyFlag: Promise<unknown>;
+	getOldMessagesResolver: () => void;
+	getOldMessagesReadyFlag: Promise<unknown>;
 	lastSeenMessage: number;
 	SB: Snackabra;
 	config: SBServerTypeAlias;

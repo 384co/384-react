@@ -1983,8 +1983,8 @@ var require_lodash = __commonJS({
           if (result2 instanceof LazyWrapper) {
             result2 = result2.value();
           }
-          return arrayReduce(actions, function(result3, action3) {
-            return action3.func.apply(action3.thisArg, arrayPush([result3], action3.args));
+          return arrayReduce(actions, function(result3, action2) {
+            return action2.func.apply(action2.thisArg, arrayPush([result3], action2.args));
           }, result2);
         }
         function baseXor(arrays, iteratee2, comparator) {
@@ -7169,10 +7169,10 @@ function clearObserving(derivation) {
   }
   derivation.dependenciesState_ = IDerivationState_.NOT_TRACKING_;
 }
-function untracked(action3) {
+function untracked(action2) {
   var prev = untrackedStart();
   try {
-    return action3();
+    return action2();
   } finally {
     untrackedEnd(prev);
   }
@@ -7654,7 +7654,7 @@ var autoActionBoundAnnotation = /* @__PURE__ */ createActionAnnotation(AUTOACTIO
   bound: true
 });
 function createActionFactory(autoAction2) {
-  var res = function action3(arg1, arg2) {
+  var res = function action2(arg1, arg2) {
     if (isFunction(arg1)) {
       return createAction(arg1.name || DEFAULT_ACTION_NAME, arg1, autoAction2);
     }
@@ -7685,6 +7685,9 @@ var autoAction = /* @__PURE__ */ createActionFactory(true);
 Object.assign(autoAction, autoActionAnnotation);
 action.bound = /* @__PURE__ */ createDecoratorAnnotation(actionBoundAnnotation);
 autoAction.bound = /* @__PURE__ */ createDecoratorAnnotation(autoActionBoundAnnotation);
+function runInAction(fn) {
+  return executeAction(fn.name || DEFAULT_ACTION_NAME, false, fn, this, void 0);
+}
 function isAction(thing) {
   return isFunction(thing) && thing.isMobxAction === true;
 }
@@ -8044,13 +8047,13 @@ function getAtomFromArgs(args) {
       return getAtom(args[0], args[1]);
   }
 }
-function transaction(action3, thisArg) {
+function transaction(action2, thisArg) {
   if (thisArg === void 0) {
     thisArg = void 0;
   }
   startBatch();
   try {
-    return action3.apply(thisArg);
+    return action2.apply(thisArg);
   } finally {
     endBatch();
   }
@@ -13918,6 +13921,9 @@ var ChannelStore = class {
       this._ready = true;
       this.readyResolver = resolve;
     });
+    this.getOldMessagesReadyFlag = new Promise((resolve) => {
+      this.getOldMessagesResolver = resolve;
+    });
     this.lastSeenMessage = 0;
     this.getChannel = (channel) => {
       return new Promise((resolve) => {
@@ -14074,8 +14080,8 @@ var ChannelStore = class {
       }
       try {
         console.log(this);
-        console.log("==== connecting to channel:" + this.id);
-        console.log("==== with key:" + this.key);
+        console.log("==== connecting to channel:", this.id);
+        console.log("==== with key:", this.key);
         const c = await this.SB.connect(
           (m) => {
             this.receiveMessage(m, true);
@@ -14087,6 +14093,7 @@ var ChannelStore = class {
         console.log(c);
         if (c) {
           await c.channelSocketReady;
+          this.getChannelMessages();
           this.key = c.exportable_privateKey;
           this.socket = c;
           this.keys = c.keys;
@@ -14099,7 +14106,6 @@ var ChannelStore = class {
           }
           this.motd = c.motd || "";
           this.getOldMessages(100);
-          this.getChannelMessages();
           this.readyResolver();
           await this.save();
           return this;
@@ -14174,7 +14180,10 @@ var ChannelStore = class {
         case "getMessages":
           console.log("worker returns getting messages", e);
           if (e.data.data.length !== this._messages.length) {
-            this.messages = e.data.data;
+            runInAction(() => {
+              this.messages = e.data.data;
+              this.getOldMessagesResolver();
+            });
           }
           break;
         default:

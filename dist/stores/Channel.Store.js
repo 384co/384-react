@@ -1,4 +1,4 @@
-import { makeAutoObservable, onBecomeUnobserved, onBecomeObserved, toJS } from "mobx";
+import { makeAutoObservable, onBecomeUnobserved, onBecomeObserved, toJS, runInAction } from "mobx";
 import { orderBy } from 'lodash';
 import IndexedKV from "../utils/IndexedKV";
 import MessageWorker from "../workers/MessageWorker.js";
@@ -26,6 +26,9 @@ export class ChannelStore {
         this.ChannelStoreReadyFlag = new Promise((resolve) => {
             this._ready = true;
             this.readyResolver = resolve;
+        });
+        this.getOldMessagesReadyFlag = new Promise((resolve) => {
+            this.getOldMessagesResolver = resolve;
         });
         this.lastSeenMessage = 0;
         this.getChannel = (channel) => {
@@ -190,13 +193,16 @@ export class ChannelStore {
             }
             try {
                 console.log(this);
-                console.log("==== connecting to channel:" + this.id);
-                console.log("==== with key:" + this.key);
+                console.log("==== connecting to channel:", this.id);
+                console.log("==== with key:", this.key);
                 const c = await this.SB.connect(m => { this.receiveMessage(m, true); }, this.key, this.id);
                 console.log("==== connected to channel:");
                 console.log(c);
                 if (c) {
                     await c.channelSocketReady;
+                    this.getChannelMessages();
+                    // alert('connected')
+                    // await this.getOldMessagesReadyFlag;
                     this.key = c.exportable_privateKey;
                     this.socket = c;
                     this.keys = c.keys;
@@ -210,7 +216,6 @@ export class ChannelStore {
                     }
                     this.motd = c.motd || '';
                     this.getOldMessages(100);
-                    this.getChannelMessages();
                     this.readyResolver();
                     await this.save();
                     return this;
@@ -307,7 +312,10 @@ export class ChannelStore {
                 case 'getMessages':
                     console.log('worker returns getting messages', e);
                     if (e.data.data.length !== this._messages.length) {
-                        this.messages = e.data.data;
+                        runInAction(() => {
+                            this.messages = e.data.data;
+                            this.getOldMessagesResolver();
+                        });
                     }
                     break;
                 default:

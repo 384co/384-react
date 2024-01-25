@@ -2,13 +2,14 @@
 
 export default () => {
     console.log(`starting message worker`);
+    const knownMessages = new Map();
     let readyResolver;
     const IndexedKVReadyFlag = new Promise((resolve) => {
         readyResolver = resolve;
     });
     let db;
     let options = {
-        db: 'sb_messages',
+        db: 'app_messages',
         table: 'messages'
     }
     let openReq = self.indexedDB.open(options.db);
@@ -196,6 +197,7 @@ export default () => {
             let _messageValues = [];
             openCursor(new RegExp(`^${channel_id}`)).then((messages) => {
                 for (let i = 0; i < messages.length; i++) {
+                    knownMessages.set(messages[i].value._id, messages[i].value._id)
                     _messageValues.push(messages[i].value);
                 }
                 port.postMessage({ error: false, status: 'ok', data: mergeMessages([], _messageValues), method: 'getMessages', channel_id: channel_id });
@@ -208,11 +210,9 @@ export default () => {
     const addMessage = (message, args, channel_id, port) => {
         try {
             message.createdAt = getDateTimeFromTimestampPrefix(message.timestampPrefix);
-            add(message._id, message)
-            console.log('addMessage', message)
-            try{
-                console.log(JSON.parse(message.text))
-            }catch(e){
+            if (!knownMessages.has(message._id)) {
+                knownMessages.set(message._id, message._id)
+                add(message._id, message)
             }
             port.postMessage({ error: false, status: 'ok', data: message, method: 'addMessage', args: args, channel_id: channel_id });
         } catch (e) {
@@ -222,11 +222,8 @@ export default () => {
 
 
     self.onmessage = (event) => {
-        console.log('Message Worker: Received message from main script', event);
         const port = event.ports[0];
-        console.log('Message Worker: port', port)
         port.onmessage = (msg) => {
-            console.log('Message Worker: Received message from main script', msg);
             const digest = msg.data
             if (digest.channel_id !== undefined) {
                 switch (digest.method) {

@@ -87,6 +87,7 @@ export class SnackabraStore {
                     this.migrate(3);
                     return;
                 case 3:
+                    console.log('Migrating to version 3');
                     this.getContacts();
                     let migrationPromises = [];
                     for (let x in channels) {

@@ -1,10 +1,3 @@
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-import { Ready } from './Decorators';
 class IndexedKV {
     constructor(options) {
         this.openDatabaseIterations = 0;
@@ -91,6 +84,34 @@ class IndexedKV {
                 }
                 else {
                     reject('DB is not defined');
+                }
+            }
+            catch (e) {
+                reject(e);
+            }
+        });
+    }
+    batchSet(items) {
+        return new Promise(async (resolve, reject) => {
+            await this.IndexedKVReadyFlag;
+            try {
+                if (this.db) {
+                    const transaction = this.db.transaction([this.options.table], "readwrite");
+                    const objectStore = transaction.objectStore(this.options.table);
+                    items.forEach(item => {
+                        objectStore.put(item);
+                    });
+                    transaction.oncomplete = () => {
+                        console.warn('Batch set complete');
+                        resolve(true);
+                    };
+                    transaction.onerror = event => {
+                        console.error(event);
+                        reject(event);
+                    };
+                }
+                else {
+                    reject(new Error('db is not defined'));
                 }
             }
             catch (e) {
@@ -302,19 +323,4 @@ class IndexedKV {
         });
     }
 }
-__decorate([
-    Ready
-], IndexedKV.prototype, "setItem", null);
-__decorate([
-    Ready
-], IndexedKV.prototype, "add", null);
-__decorate([
-    Ready
-], IndexedKV.prototype, "getItem", null);
-__decorate([
-    Ready
-], IndexedKV.prototype, "getAll", null);
-__decorate([
-    Ready
-], IndexedKV.prototype, "removeItem", null);
 export default IndexedKV;

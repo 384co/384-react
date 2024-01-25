@@ -1,4 +1,4 @@
-import { makeAutoObservable, onBecomeUnobserved, onBecomeObserved, toJS, runInAction } from "mobx";
+import { makeAutoObservable, onBecomeUnobserved, onBecomeObserved, toJS } from "mobx";
 import { orderBy } from 'lodash';
 import IndexedKV from "../utils/IndexedKV";
 import MessageWorker from "../workers/MessageWorker.js";
@@ -92,29 +92,82 @@ export class ChannelStore {
             }, 250);
         };
         this.getChannelMessages = async () => {
-            this.workerPort.port2.postMessage({ method: 'getMessages', channel_id: this._id });
+            console.log(this._id);
+            if (this._db === undefined) {
+                console.log('db is undefined');
+                return false;
+            }
+            // this.workerPort.port2.postMessage({ method: 'getMessages', channel_id: this._id })
+            const messages = await this._db.getAll();
+            console.log('got messages from db', messages);
+            const newMessages = [];
+            if (messages.length > 0) {
+                for (let x in messages) {
+                    this._getOldMessagesMap.set(messages[x]._id, messages[x]);
+                    newMessages.push(messages[x].value);
+                }
+            }
+            console.log('new messages', newMessages.length);
+            console.log('old messages', this.messages.length);
+            if (newMessages.length > 0 && newMessages.length > this._messages.length) {
+                this.messages = newMessages;
+            }
+            return true;
         };
         this.getMessages = () => {
             return toJS(this._messages);
         };
-        this.getStorageAmount = () => {
-            return this._socket?.api.getStorageLimit();
+        this.getStorageAmount = async () => {
+            if (this._socket) {
+                try {
+                    const amount = await this._socket.api.getStorageLimit();
+                    console.log(amount);
+                    return amount.storageLimit;
+                }
+                catch (e) {
+                    if (e instanceof Error)
+                        console.warn(e.message);
+                    return null;
+                }
+            }
+            else {
+                return null;
+            }
+        };
+        this.processOldMessages = async (messages) => {
+        };
+        this.batchSet = async (messages) => {
+            if (!this._db)
+                throw new Error("no db");
+            this._db.batchSet(messages).then((result) => {
+                this.getChannelMessages();
+            });
         };
         this.getOldMessages = async (length = 0, size = 0) => {
             if (!this._socket)
                 throw new Error("no socket");
+            if (!this._db)
+                throw new Error("no db");
             const r_messages = await this._socket.api.getOldMessages(length, true);
             console.log("==== got these old messages:", r_messages.length);
+            let newMessages = [];
             for (let x in r_messages) {
                 let m = r_messages[x];
                 if (m && !this._getOldMessagesMap.has(m._id)) {
                     this._getOldMessagesMap.set(m._id, m);
-                    this.receiveMessage(m);
+                    newMessages.push({
+                        key: m._id,
+                        value: m
+                    });
                 }
             }
+            if (newMessages.length > 0) {
+                this.batchSet(newMessages);
+            }
+            console.log(this._id);
+            console.log("==== got these old messages:", r_messages.length, size);
             if (this._getOldMessagesMap.size !== size) {
-                console.log("==== getting more messages", this._getOldMessagesMap.size, size);
-                this.getChannelMessages();
+                console.log("==== getting more messages", this._getOldMessagesMap.size, r_messages.length + size);
                 return await this.getOldMessages(length, this._getOldMessagesMap.size);
             }
             return this._getOldMessagesMap;
@@ -200,11 +253,11 @@ export class ChannelStore {
                 console.log(c);
                 if (c) {
                     await c.channelSocketReady;
-                    this.getChannelMessages();
+                    await this.getChannelMessages();
                     // alert('connected')
                     // await this.getOldMessagesReadyFlag;
                     this.key = c.exportable_privateKey;
-                    this.socket = c;
+                    this._socket = c;
                     this.keys = c.keys;
                     this.owner = c.owner;
                     try {
@@ -230,11 +283,13 @@ export class ChannelStore {
             }
         };
         this.receiveMessage = (m, updateState = false) => {
-            console.log("==== received this message:", this._id, m);
+            if (!this._db)
+                throw new Error("no db");
             if (updateState) {
                 this.messages.push(m);
             }
-            this.workerPort.port2.postMessage({ method: 'addMessage', channel_id: this._id, message: m, args: { updateState: updateState } });
+            this._db.setItem(m._id, m);
+            // this.workerPort.port2.postMessage({ method: 'addMessage', channel_id: this._id, message: m, args: { updateState: updateState } })
         };
         this.config = config;
         // this.config.onClose = () => {
@@ -292,6 +347,10 @@ export class ChannelStore {
         if (channelId) {
             this.id = channelId;
             this.getChannel(this.id);
+            this._db = new IndexedKV({
+                db: this.id,
+                table: 'messages'
+            });
         }
         this.workerPort = new MessageChannel();
         this.workerPort.port2.onmessageerror = (e) => {
@@ -312,10 +371,8 @@ export class ChannelStore {
                 case 'getMessages':
                     console.log('worker returns getting messages', e);
                     if (e.data.data.length !== this._messages.length) {
-                        runInAction(() => {
-                            this.messages = e.data.data;
-                            this.getOldMessagesResolver();
-                        });
+                        this.messages = e.data.data;
+                        this.getOldMessagesResolver();
                     }
                     break;
                 default:
@@ -372,6 +429,7 @@ export class ChannelStore {
     }
     set socket(socket) {
         if (!socket) {
+            alert('no socket');
             console.trace();
             return;
         }

@@ -25,7 +25,7 @@ export interface ChannelStoreType {
     messages: __.SnackabraTypes.ChannelMessage[];
     getMessages: () => __.SnackabraTypes.ChannelMessage[];
     getOldMessages: (length: number | undefined) => Promise<unknown>;
-    getStorageAmount: () => Promise<unknown>;
+    getStorageAmount: () => Promise<number | null>;
     replyEncryptionKey: (recipientPubkey: string) => Promise<unknown>;
     sendMessage: (body: { [key: string]: any }, message?: string) => Promise<unknown>;
     lock: () => Promise<unknown>;
@@ -52,6 +52,7 @@ export class ChannelStore implements ChannelStoreType {
     private _visible = true;
     private _savingTimout?: number;
     private _getOldMessagesMap: Map<string, any> = new Map();
+    private _db;
     messages: __.ChannelMessage[] = [];
     workerPort: MessageChannel;
     readyResolver!: () => void;
@@ -133,6 +134,10 @@ export class ChannelStore implements ChannelStoreType {
         if (channelId) {
             this.id = channelId;
             this.getChannel(this.id);
+            this._db = new IndexedKV({
+                db: this.id,
+                table: 'messages'
+            });
         }
 
         this.workerPort = new MessageChannel();
@@ -157,10 +162,8 @@ export class ChannelStore implements ChannelStoreType {
                 case 'getMessages':
                     console.log('worker returns getting messages', e)
                     if (e.data.data.length !== this._messages.length) {
-                        runInAction(() => {
-                            this.messages = e.data.data
-                            this.getOldMessagesResolver()
-                        })
+                        this.messages = e.data.data
+                        this.getOldMessagesResolver()
 
                     }
 
@@ -239,7 +242,29 @@ export class ChannelStore implements ChannelStoreType {
     }
 
     getChannelMessages = async () => {
-        this.workerPort.port2.postMessage({ method: 'getMessages', channel_id: this._id })
+        console.log(this._id)
+        if (this._db === undefined) {
+            console.log('db is undefined')
+            return false;
+        }
+        // this.workerPort.port2.postMessage({ method: 'getMessages', channel_id: this._id })
+        const messages = await this._db.getAll()
+        console.log('got messages from db', messages)
+        const newMessages = []
+        if (messages.length > 0) {
+            for(let x in messages) {
+                this._getOldMessagesMap.set(messages[x]._id, messages[x])
+                newMessages.push(messages[x].value)
+            }
+        }
+
+        console.log('new messages', newMessages.length)
+        console.log('old messages', this.messages.length)
+        if(newMessages.length > 0 && newMessages.length > this._messages.length) {
+            this.messages = newMessages
+        }
+
+        return true;
     }
 
     get id() {
@@ -300,6 +325,7 @@ export class ChannelStore implements ChannelStoreType {
 
     set socket(socket) {
         if (!socket) {
+            alert('no socket')
             console.trace()
             return
         }
@@ -350,26 +376,60 @@ export class ChannelStore implements ChannelStoreType {
         this._owner = owner
     }
 
-    getStorageAmount = (): any => {
-        return this._socket?.api.getStorageLimit()
+    getStorageAmount = async (): Promise<number | null> => {
+        if (this._socket) {
+            try {
+                const amount = await this._socket!.api.getStorageLimit() as unknown as { storageLimit: number }
+                console.log(amount)
+                return amount.storageLimit
+            } catch (e) {
+                if (e instanceof Error)
+                    console.warn(e.message)
+                return null
+            }
+
+        } else {
+            return null
+        }
+
+    }
+
+    processOldMessages = async (messages: Array<__.SnackabraTypes.ChannelMessage>) => {
+    }
+
+    batchSet = async (messages: Array<{ key: string, value: any }>) => {
+        if (!this._db) throw new Error("no db");
+        this._db.batchSet(messages).then((result) => {
+            this.getChannelMessages()
+        })
     }
 
     getOldMessages = async (length: number = 0, size: number = 0): Promise<Map<string, any>> => {
         if (!this._socket) throw new Error("no socket");
+        if (!this._db) throw new Error("no db");
+
 
         const r_messages: Array<__.SnackabraTypes.ChannelMessage> = await this._socket.api.getOldMessages(length, true);
 
         console.log("==== got these old messages:", r_messages.length);
+        let newMessages: any = [];
         for (let x in r_messages) {
             let m = r_messages[x];
             if (m && !this._getOldMessagesMap.has(m._id as string)) {
                 this._getOldMessagesMap.set(m._id as string, m);
-                this.receiveMessage(m);
+                newMessages.push({
+                    key: m._id,
+                    value: m
+                })
             }
         }
+        if (newMessages.length > 0) {
+            this.batchSet(newMessages);
+        }
+        console.log(this._id)
+        console.log("==== got these old messages:", r_messages.length, size)
         if (this._getOldMessagesMap.size !== size) {
-            console.log("==== getting more messages", this._getOldMessagesMap.size, size)
-            this.getChannelMessages();
+            console.log("==== getting more messages", this._getOldMessagesMap.size, r_messages.length + size)
             return await this.getOldMessages(length, this._getOldMessagesMap.size);
         }
 
@@ -458,11 +518,11 @@ export class ChannelStore implements ChannelStoreType {
             console.log("==== connected to channel:"); console.log(c);
             if (c) {
                 await c.channelSocketReady;
-                this.getChannelMessages();
+                await this.getChannelMessages();
                 // alert('connected')
                 // await this.getOldMessagesReadyFlag;
                 this.key = c.exportable_privateKey
-                this.socket = c;
+                this._socket = c;
                 this.keys = c.keys;
                 this.owner = c.owner
                 try {
@@ -488,11 +548,12 @@ export class ChannelStore implements ChannelStoreType {
     };
 
     receiveMessage = (m: __.ChannelMessage, updateState = false) => {
-        console.log("==== received this message:", this._id, m)
+        if (!this._db) throw new Error("no db");
         if (updateState) {
             this.messages.push(m)
         }
-        this.workerPort.port2.postMessage({ method: 'addMessage', channel_id: this._id, message: m, args: { updateState: updateState } })
+        this._db.setItem(m._id as string, m)
+        // this.workerPort.port2.postMessage({ method: 'addMessage', channel_id: this._id, message: m, args: { updateState: updateState } })
     };
 
 }

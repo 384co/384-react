@@ -23,15 +23,6 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
   isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
   mod
 ));
-var __decorateClass = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc(target, key) : target;
-  for (var i = decorators.length - 1, decorator; i >= 0; i--)
-    if (decorator = decorators[i])
-      result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result)
-    __defProp(target, key, result);
-  return result;
-};
 
 // node_modules/lodash/lodash.js
 var require_lodash = __commonJS({
@@ -7685,9 +7676,6 @@ var autoAction = /* @__PURE__ */ createActionFactory(true);
 Object.assign(autoAction, autoActionAnnotation);
 action.bound = /* @__PURE__ */ createDecoratorAnnotation(actionBoundAnnotation);
 autoAction.bound = /* @__PURE__ */ createDecoratorAnnotation(autoActionBoundAnnotation);
-function runInAction(fn) {
-  return executeAction(fn.name || DEFAULT_ACTION_NAME, false, fn, this, void 0);
-}
 function isAction(thing) {
   return isFunction(thing) && thing.isMobxAction === true;
 }
@@ -10084,7 +10072,7 @@ if (typeof __MOBX_DEVTOOLS_GLOBAL_HOOK__ === "object") {
 // ../lib384/dist/384.esm.js
 var __defProp2 = Object.defineProperty;
 var __getOwnPropDesc2 = Object.getOwnPropertyDescriptor;
-var __decorateClass2 = (decorators, target, key, kind) => {
+var __decorateClass = (decorators, target, key, kind) => {
   var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc2(target, key) : target;
   for (var i = decorators.length - 1, decorator; i >= 0; i--)
     if (decorator = decorators[i])
@@ -11409,30 +11397,30 @@ var SB384 = class {
     return JSON.stringify(this.exportable_pubKey);
   }
 };
-__decorateClass2([
+__decorateClass([
   Memoize
 ], SB384.prototype, "readyFlag", 1);
-__decorateClass2([
+__decorateClass([
   Memoize,
   Ready
 ], SB384.prototype, "exportable_pubKey", 1);
-__decorateClass2([
+__decorateClass([
   Memoize,
   Ready
 ], SB384.prototype, "exportable_privateKey", 1);
-__decorateClass2([
+__decorateClass([
   Memoize,
   Ready
 ], SB384.prototype, "privateKey", 1);
-__decorateClass2([
+__decorateClass([
   Memoize,
   Ready
 ], SB384.prototype, "ownerChannelId", 1);
-__decorateClass2([
+__decorateClass([
   Memoize,
   Ready
 ], SB384.prototype, "hash", 1);
-__decorateClass2([
+__decorateClass([
   Memoize,
   Ready
 ], SB384.prototype, "_id", 1);
@@ -11516,7 +11504,7 @@ var SBMessage = class {
     });
   }
 };
-__decorateClass2([
+__decorateClass([
   Ready
 ], SBMessage.prototype, "encryptionKey", 1);
 var Channel = class extends SB384 {
@@ -11702,19 +11690,13 @@ var Channel = class extends SB384 {
           reject(new Error("Network response was not OK"));
         return response.json();
       }).then((messages) => {
-        if (DBG)
+        if (DBG) {
           console.log("getOldMessages");
-        if (DBG)
           console.log(messages);
-        const keys = Object.keys(messages);
-        if (DBG)
-          console.log("keys:", keys);
-        let firstMessage = keys[0];
-        if (DBG)
-          console.log("firstMessage:", firstMessage);
-        if (firstMessage) {
-          this.#cursor = firstMessage;
         }
+        let firstMessageKey = Object.keys(messages)[0];
+        if (firstMessageKey)
+          this.#cursor = firstMessageKey || "";
         Promise.all(Object.keys(messages).filter((v) => messages[v].hasOwnProperty("encrypted_contents")).map((v) => deCryptChannelMessage(v, messages[v].encrypted_contents, this.#channelKeys))).then((unfilteredDecryptedMessageArray) => unfilteredDecryptedMessageArray.filter((v) => Boolean(v))).then((decryptedMessageArray) => {
           if (DBG2)
             console.log(decryptedMessageArray);
@@ -11936,79 +11918,79 @@ var Channel = class extends SB384 {
   // ownerUnread() { }
   // registerDevice() { }
 };
-__decorateClass2([
+__decorateClass([
   Memoize,
   Ready
 ], Channel.prototype, "keys", 1);
-__decorateClass2([
+__decorateClass([
   Memoize,
   Ready
 ], Channel.prototype, "sbServer", 1);
-__decorateClass2([
+__decorateClass([
   Memoize,
   Ready
 ], Channel.prototype, "readyFlag", 1);
-__decorateClass2([
+__decorateClass([
   Memoize,
   Ready
 ], Channel.prototype, "api", 1);
-__decorateClass2([
+__decorateClass([
   Memoize,
   Ready
 ], Channel.prototype, "channelId", 1);
-__decorateClass2([
+__decorateClass([
   Memoize,
   Ready
 ], Channel.prototype, "channelSignKey", 1);
-__decorateClass2([
+__decorateClass([
   Ready
 ], Channel.prototype, "updateCapacity", 1);
-__decorateClass2([
+__decorateClass([
   Ready
 ], Channel.prototype, "getCapacity", 1);
-__decorateClass2([
+__decorateClass([
   Ready
 ], Channel.prototype, "getStorageLimit", 1);
-__decorateClass2([
+__decorateClass([
   Ready
 ], Channel.prototype, "getMother", 1);
-__decorateClass2([
+__decorateClass([
   Ready
 ], Channel.prototype, "getJoinRequests", 1);
-__decorateClass2([
+__decorateClass([
   ExceptionReject
 ], Channel.prototype, "isLocked", 1);
-__decorateClass2([
+__decorateClass([
   Ready
 ], Channel.prototype, "setMOTD", 1);
-__decorateClass2([
+__decorateClass([
   Ready
 ], Channel.prototype, "getAdminData", 1);
-__decorateClass2([
+__decorateClass([
   Ready
 ], Channel.prototype, "downloadData", 1);
-__decorateClass2([
+__decorateClass([
   Ready
 ], Channel.prototype, "uploadChannel", 1);
-__decorateClass2([
+__decorateClass([
   Ready
 ], Channel.prototype, "authorize", 1);
-__decorateClass2([
+__decorateClass([
   Ready
 ], Channel.prototype, "postPubKey", 1);
-__decorateClass2([
+__decorateClass([
   Ready
 ], Channel.prototype, "storageRequest", 1);
-__decorateClass2([
+__decorateClass([
   Ready
 ], Channel.prototype, "lock", 1);
-__decorateClass2([
+__decorateClass([
   Ready
 ], Channel.prototype, "acceptVisitor", 1);
-__decorateClass2([
+__decorateClass([
   Ready
 ], Channel.prototype, "ownerKeyRotation", 1);
-__decorateClass2([
+__decorateClass([
   Ready
 ], Channel.prototype, "budd", 1);
 function noMessageHandler(_m) {
@@ -12343,13 +12325,13 @@ var ChannelSocket = class extends Channel {
     return this.keys.ownerKey;
   }
 };
-__decorateClass2([
+__decorateClass([
   Ready
 ], ChannelSocket.prototype, "onMessage", 1);
-__decorateClass2([
+__decorateClass([
   VerifyParameters
 ], ChannelSocket.prototype, "send", 1);
-__decorateClass2([
+__decorateClass([
   Memoize,
   Ready
 ], ChannelSocket.prototype, "exportable_owner_pubKey", 1);
@@ -13367,32 +13349,6 @@ var NewSB = {
 // src/stores/Channel.Store.ts
 var import_lodash = __toESM(require_lodash());
 
-// src/utils/Misc.ts
-function _sb_assert2(val, msg) {
-  if (!val) {
-    const m = `<< SB assertion error: ${msg} >>`;
-    throw new Error(m);
-  }
-}
-
-// src/utils/Decorators.ts
-function Ready2(target, propertyKey, descriptor) {
-  if (descriptor && descriptor.get) {
-    let get3 = descriptor.get;
-    descriptor.get = function() {
-      const obj = target.constructor.name;
-      const prop = `${obj}ReadyFlag`;
-      if (prop in this) {
-        const rf = "readyFlag";
-        _sb_assert2(this[rf], `${propertyKey} getter accessed but object ${obj} not ready (fatal)`);
-      }
-      const retValue = get3.call(this);
-      _sb_assert2(retValue != null, `${propertyKey} getter accessed in object type ${obj} but returns NULL (fatal)`);
-      return retValue;
-    };
-  }
-}
-
 // src/utils/IndexedKV.ts
 var IndexedKV = class {
   constructor(options) {
@@ -13481,6 +13437,39 @@ var IndexedKV = class {
       }
     });
   }
+  batchSet(items) {
+    return new Promise(async (resolve, reject) => {
+      await this.IndexedKVReadyFlag;
+      try {
+        if (this.db) {
+          const transaction2 = this.db.transaction([this.options.table], "readwrite");
+          const objectStore = transaction2.objectStore(this.options.table);
+          items.forEach((item) => {
+            objectStore.put(item);
+          });
+          transaction2.oncomplete = () => {
+            console.warn("Batch set complete");
+            resolve(true);
+          };
+          transaction2.onerror = (event) => {
+            console.error(event);
+            reject(event);
+          };
+        } else {
+          reject(new Error("db is not defined"));
+        }
+      } catch (e) {
+        reject(e);
+      }
+    });
+  }
+  /**
+   * setItem will add or replace an entry by key
+   *
+   * @param {string | number} key
+   * @param {StructuredCloneData} value
+   * @returns {Promise<IDBValidKey>}
+   */
   setItem(key, value) {
     return new Promise(async (resolve, reject) => {
       await this.IndexedKVReadyFlag;
@@ -13523,6 +13512,14 @@ var IndexedKV = class {
       }
     });
   }
+  /**
+   * @description
+   * Add an item to the database
+   *
+   * @param {string | number} key
+   * @param {StructuredCloneData} value
+   * @returns {Promise<IDBValidKey | IDBRequest["result"]>}
+   */
   add(key, value) {
     return new Promise(async (resolve, reject) => {
       await this.IndexedKVReadyFlag;
@@ -13555,6 +13552,13 @@ var IndexedKV = class {
       }
     });
   }
+  /**
+   * @description
+   * Get an item from the database
+   *
+   * @param {string | number} key
+   * @returns
+   */
   getItem(key) {
     return new Promise(async (resolve, reject) => {
       await this.IndexedKVReadyFlag;
@@ -13582,6 +13586,12 @@ var IndexedKV = class {
       }
     });
   }
+  /**
+   *@description
+   * Get all items from the database
+   *
+   * @returns {Promise<Array<any> | null>}
+   */
   getAll() {
     return new Promise(async (resolve, reject) => {
       await this.IndexedKVReadyFlag;
@@ -13609,6 +13619,13 @@ var IndexedKV = class {
       }
     });
   }
+  /**
+   * @description
+   * Remove an item from the database
+   *
+   * @param {string | number} key
+   * @returns {Promise<boolean>}
+   */
   removeItem(key) {
     return new Promise(async (resolve, reject) => {
       console.log(this.IndexedKVReadyFlag);
@@ -13633,33 +13650,19 @@ var IndexedKV = class {
     });
   }
 };
-__decorateClass([
-  Ready2
-], IndexedKV.prototype, "setItem", 1);
-__decorateClass([
-  Ready2
-], IndexedKV.prototype, "add", 1);
-__decorateClass([
-  Ready2
-], IndexedKV.prototype, "getItem", 1);
-__decorateClass([
-  Ready2
-], IndexedKV.prototype, "getAll", 1);
-__decorateClass([
-  Ready2
-], IndexedKV.prototype, "removeItem", 1);
 var IndexedKV_default = IndexedKV;
 
 // src/workers/MessageWorker.js
 var MessageWorker_default = () => {
   console.log(`starting message worker`);
+  const knownMessages = /* @__PURE__ */ new Map();
   let readyResolver;
   const IndexedKVReadyFlag = new Promise((resolve) => {
     readyResolver = resolve;
   });
   let db;
   let options = {
-    db: "sb_messages",
+    db: "app_messages",
     table: "messages"
   };
   let openReq = self.indexedDB.open(options.db);
@@ -13850,6 +13853,7 @@ var MessageWorker_default = () => {
       let _messageValues = [];
       openCursor(new RegExp(`^${channel_id}`)).then((messages) => {
         for (let i = 0; i < messages.length; i++) {
+          knownMessages.set(messages[i].value._id, messages[i].value._id);
           _messageValues.push(messages[i].value);
         }
         port.postMessage({ error: false, status: "ok", data: mergeMessages([], _messageValues), method: "getMessages", channel_id });
@@ -13861,11 +13865,9 @@ var MessageWorker_default = () => {
   const addMessage = (message, args, channel_id, port) => {
     try {
       message.createdAt = getDateTimeFromTimestampPrefix(message.timestampPrefix);
-      add(message._id, message);
-      console.log("addMessage", message);
-      try {
-        console.log(JSON.parse(message.text));
-      } catch (e) {
+      if (!knownMessages.has(message._id)) {
+        knownMessages.set(message._id, message._id);
+        add(message._id, message);
       }
       port.postMessage({ error: false, status: "ok", data: message, method: "addMessage", args, channel_id });
     } catch (e) {
@@ -13873,11 +13875,8 @@ var MessageWorker_default = () => {
     }
   };
   self.onmessage = (event) => {
-    console.log("Message Worker: Received message from main script", event);
     const port = event.ports[0];
-    console.log("Message Worker: port", port);
     port.onmessage = (msg) => {
-      console.log("Message Worker: Received message from main script", msg);
       const digest = msg.data;
       if (digest.channel_id !== void 0) {
         switch (digest.method) {
@@ -13983,29 +13982,79 @@ var ChannelStore = class {
       }, 250);
     };
     this.getChannelMessages = async () => {
-      this.workerPort.port2.postMessage({ method: "getMessages", channel_id: this._id });
+      console.log(this._id);
+      if (this._db === void 0) {
+        console.log("db is undefined");
+        return false;
+      }
+      const messages = await this._db.getAll();
+      console.log("got messages from db", messages);
+      const newMessages = [];
+      if (messages.length > 0) {
+        for (let x in messages) {
+          this._getOldMessagesMap.set(messages[x]._id, messages[x]);
+          newMessages.push(messages[x].value);
+        }
+      }
+      console.log("new messages", newMessages.length);
+      console.log("old messages", this.messages.length);
+      if (newMessages.length > 0 && newMessages.length > this._messages.length) {
+        this.messages = newMessages;
+      }
+      return true;
     };
     this.getMessages = () => {
       return toJS(this._messages);
     };
-    this.getStorageAmount = () => {
-      return this._socket?.api.getStorageLimit();
+    this.getStorageAmount = async () => {
+      if (this._socket) {
+        try {
+          const amount = await this._socket.api.getStorageLimit();
+          console.log(amount);
+          return amount.storageLimit;
+        } catch (e) {
+          if (e instanceof Error)
+            console.warn(e.message);
+          return null;
+        }
+      } else {
+        return null;
+      }
+    };
+    this.processOldMessages = async (messages) => {
+    };
+    this.batchSet = async (messages) => {
+      if (!this._db)
+        throw new Error("no db");
+      this._db.batchSet(messages).then((result) => {
+        this.getChannelMessages();
+      });
     };
     this.getOldMessages = async (length = 0, size = 0) => {
       if (!this._socket)
         throw new Error("no socket");
+      if (!this._db)
+        throw new Error("no db");
       const r_messages = await this._socket.api.getOldMessages(length, true);
       console.log("==== got these old messages:", r_messages.length);
+      let newMessages = [];
       for (let x in r_messages) {
         let m = r_messages[x];
         if (m && !this._getOldMessagesMap.has(m._id)) {
           this._getOldMessagesMap.set(m._id, m);
-          this.receiveMessage(m);
+          newMessages.push({
+            key: m._id,
+            value: m
+          });
         }
       }
+      if (newMessages.length > 0) {
+        this.batchSet(newMessages);
+      }
+      console.log(this._id);
+      console.log("==== got these old messages:", r_messages.length, size);
       if (this._getOldMessagesMap.size !== size) {
-        console.log("==== getting more messages", this._getOldMessagesMap.size, size);
-        this.getChannelMessages();
+        console.log("==== getting more messages", this._getOldMessagesMap.size, r_messages.length + size);
         return await this.getOldMessages(length, this._getOldMessagesMap.size);
       }
       return this._getOldMessagesMap;
@@ -14093,9 +14142,9 @@ var ChannelStore = class {
         console.log(c);
         if (c) {
           await c.channelSocketReady;
-          this.getChannelMessages();
+          await this.getChannelMessages();
           this.key = c.exportable_privateKey;
-          this.socket = c;
+          this._socket = c;
           this.keys = c.keys;
           this.owner = c.owner;
           try {
@@ -14118,11 +14167,12 @@ var ChannelStore = class {
       }
     };
     this.receiveMessage = (m, updateState = false) => {
-      console.log("==== received this message:", this._id, m);
+      if (!this._db)
+        throw new Error("no db");
       if (updateState) {
         this.messages.push(m);
       }
-      this.workerPort.port2.postMessage({ method: "addMessage", channel_id: this._id, message: m, args: { updateState } });
+      this._db.setItem(m._id, m);
     };
     this.config = config;
     this.SB = new SB2.Snackabra(this.config);
@@ -14160,6 +14210,10 @@ var ChannelStore = class {
     if (channelId) {
       this.id = channelId;
       this.getChannel(this.id);
+      this._db = new IndexedKV_default({
+        db: this.id,
+        table: "messages"
+      });
     }
     this.workerPort = new MessageChannel();
     this.workerPort.port2.onmessageerror = (e) => {
@@ -14180,10 +14234,8 @@ var ChannelStore = class {
         case "getMessages":
           console.log("worker returns getting messages", e);
           if (e.data.data.length !== this._messages.length) {
-            runInAction(() => {
-              this.messages = e.data.data;
-              this.getOldMessagesResolver();
-            });
+            this.messages = e.data.data;
+            this.getOldMessagesResolver();
           }
           break;
         default:
@@ -14239,6 +14291,7 @@ var ChannelStore = class {
   }
   set socket(socket) {
     if (!socket) {
+      alert("no socket");
       console.trace();
       return;
     }
@@ -14366,6 +14419,7 @@ var SnackabraStore = class {
           this.migrate(3);
           return;
         case 3:
+          console.log("Migrating to version 3");
           this.getContacts();
           let migrationPromises = [];
           for (let x in channels) {

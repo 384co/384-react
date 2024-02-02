@@ -1,0 +1,92 @@
+{
+  "name": "test-app",
+  "description": "test-app",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@emotion/react": "^11.9.0",
+    "@emotion/styled": "^11.8.1",
+    "@mui/icons-material": "5.8.4",
+    "@mui/material": "5.8.2",
+    "@mui/styles": "^5.15.1",
+    "@mui/utils": "5.9.3",
+    "@testing-library/jest-dom": "^5.16.4",
+    "@testing-library/react": "^13.3.0",
+    "@testing-library/user-event": "^13.5.0",
+    "animated": "^0.2.2",
+    "cypress": "^13.6.3",
+    "file-selector": "^0.6.0",
+    "lib384": "link:../../lib384",
+    "lodash": "^4.17.21",
+    "mobx": "^6.12.0",
+    "mui-image": "^1.0.7",
+    "react": "^18.2.0",
+    "react-device-detect": "^2.2.3",
+    "react-dom": "^18.2.0",
+    "react-dropzone": "^14.2.3",
+    "react-router-dom": "^6.20.0",
+    "react-scripts": "5.0.1",
+    "react-swipeable-views": "^0.14.0",
+    "react-swipeable-views-utils": "^0.14.0",
+    "@384/components" : "link:../packages/components/build",
+    "styled-components": "^5.3.5",
+    "tss-react": "^4.9.3",
+    "typescript": "^5.2.0",
+    "uuid": "^9.0.1",
+    "web-vitals": "^2.1.4",
+    "workbox-background-sync": "^6.4.2",
+    "workbox-broadcast-update": "^6.4.2",
+    "workbox-cacheable-response": "^6.4.2",
+    "workbox-core": "^6.4.2",
+    "workbox-expiration": "^6.4.2",
+    "workbox-google-analytics": "^6.4.2",
+    "workbox-navigation-preload": "^6.4.2",
+    "workbox-precaching": "^6.4.2",
+    "workbox-range-requests": "^6.4.2",
+    "workbox-routing": "^6.4.2",
+    "workbox-strategies": "^6.4.2",
+    "workbox-streams": "^6.4.2"
+  },
+  "scripts": {
+    "clean": "rm -rf build && rm -rf node_modules && rm yarn.lock",
+    "start": "react-scripts start"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@babel/core": "7.19.6",
+    "@babel/preset-env": "7.6.0",
+    "@babel/preset-react": "7.0.0",
+    "@babel/preset-typescript": "^7.23.2",
+    "@craco/craco": "^7.1.0",
+    "@cypress/code-coverage": "^3.12.7",
+    "@cypress/react": "^8.0.0",
+    "@cypress/webpack-dev-server": "^3.6.1",
+    "@faker-js/faker": "^8.4.0",
+    "@testing-library/jest-dom": "^5.16.1",
+    "@testing-library/react": "^13.0.0",
+    "@testing-library/user-event": "^13.5.0",
+    "@types/jest": "^27.4.0",
+    "@types/lodash": "^4.14.202",
+    "@types/react-swipeable-views": "^0.13.5",
+    "@types/uuid": "^9.0.8",
+    "concurrently": "^8.2.2"
+  }
+}

@@ -1,0 +1,105 @@
+{
+    "id": "2282b2ba-5562-43dc-be7a-858c99895498",
+    "start_url": ".",
+    "dir": "ltr",
+    "display_override": [
+        "window-controls-overlay",
+        "standalone",
+        "browser"
+    ],
+    "display": "standalone",
+    "theme_color": "#000000",
+    "background_color": "#ffffff",
+    "scope": "https://music.384.co",
+    "short_name": "384 Music",
+    "name": "384 Inc. Music",
+    "description": "Music on the Edge",
+    "orientation": "portrait",
+    "lang": "en-US",
+    "icons": [
+
+        {
+            "src": "/apple-touch-icon-72x72.png",
+            "sizes": "72x72",
+            "type": "image/png",
+            "density": "1.5"
+        },
+        {
+            "src": "/android-icon-96x96.png",
+            "sizes": "96x96",
+            "type": "image/png",
+            "density": "2.0"
+        },
+        {
+            "src": "/apple-touch-icon-144x144.png",
+            "sizes": "144x144",
+            "type": "image/png",
+            "density": "3.0"
+        },
+        {
+            "src": "/android-chrome-192x192.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "/android-chrome-512x512.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ],
+    "screenshots": [
+        {
+            "src": "/images/screenshot1.PNG",
+            "type": "image/png",
+            "sizes": "540x720"
+        },
+        {
+            "src": "/images/screenshot2.PNG",
+            "type": "image/png",
+            "sizes": "1290x2796"
+        },
+        {
+            "src": "/images/screenshot_3.PNG",
+            "type": "image/png",
+            "sizes": "1290x2796"
+        }
+    ],
+    "launch_handler": {
+        "client_mode": [
+            "navigate-existing",
+            "auto"
+        ]
+    },
+    "categories": [
+        "music"
+    ],
+    "url_handlers": [
+        {
+            "origin": "https://music.384.co"
+        }
+    ],
+    "shortcuts": [
+        {
+            "name": "384 Music",
+            "url": "/",
+            "description": "Music on the Edge",
+            "icons": [
+                {
+                    "src": "/android-icon-96x96.png",
+                    "type": "image/png",
+                    "purpose": "any"
+                }
+            ]
+        }
+    ],
+    "scope_extensions": [
+        {
+            "origin": "music.384.co"
+        }
+    ],
+    "web_apps": [
+        {
+            "web_app_identity": "https://music.384.co"
+        }
+    ]
+}

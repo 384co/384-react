@@ -7,7 +7,7 @@ export interface DropZoneProps extends React.PropsWithChildren<{}> {
     activeStyle?: React.CSSProperties,
     disabledStyle?: React.CSSProperties,
     focusedStyle?: React.CSSProperties,
-    styles?: React.CSSProperties,
+    style?: React.CSSProperties,
     dzRef?: Ref<DropzoneRef> | undefined,
     id?: string,
     noClick?: boolean,

@@ -8,44 +8,45 @@ import { isMobile } from 'react-device-detect';
 import { fromEvent } from "file-selector";
 import { useSBFH } from '@384/core';
 
+let baseStyle = {
+  flex: 1,
+  cursor: 'pointer',
+  height: '100%',
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  borderWidth: 1,
+  borderRadius: 2,
+  borderColor: '#eeeeee',
+  borderStyle: 'solid',
+  backgroundColor: '##fff',
+  color: '#bdbdbd',
+  outline: 'none',
+  transition: 'border .24s ease-in-out',
+}
+
+let focusedStyle = {
+  borderColor: '#2196f3',
+}
+
+let acceptStyle = {
+  borderColor: '#00e676',
+}
+
+let rejectStyle = {
+  borderColor: '#ff1744',
+}
+
 
 const DropZoneComponent = (props: DropZoneProps) => {
   const SBFH = useSBFH();
-  const { children, dzRef, styles = {} } = props;
+  const { children, dzRef, style = {} } = props;
   const [success, setSuccess] = React.useState(false)
   const [dragAccept, setDragAccept] = React.useState(false)
   const [draggReject, setDragReject] = React.useState(false)
   const elementId = `${props.id}`
   let maxFiles = isMobile ? 5 : 10
 
-  let baseStyle = {
-    flex: 1,
-    cursor: 'pointer',
-    height: '100%',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderRadius: 2,
-    borderColor: '#eeeeee',
-    borderStyle: 'solid',
-    backgroundColor: '##fff',
-    color: '#bdbdbd',
-    outline: 'none',
-    transition: 'border .24s ease-in-out',
-  }
-
-  let focusedStyle = {
-    borderColor: '#2196f3',
-  }
-
-  let acceptStyle = {
-    borderColor: '#00e676',
-  }
-
-  let rejectStyle = {
-    borderColor: '#ff1744',
-  }
 
   React.useEffect(() => {
     if (success) {
@@ -221,14 +222,14 @@ const DropZoneComponent = (props: DropZoneProps) => {
         // focusedStyle = Object.assign({}, focusedStyle, props.focusedStyle)
         // acceptStyle = Object.assign({}, acceptStyle, props.acceptStyle)
         // rejectStyle = Object.assign({}, rejectStyle, props.rejectStyle)
-        const _style = {
-          ...{ ...baseStyle, ...styles },
+        const style = {
+          ...{ ...baseStyle, ...props.style },
           ...(isFocused ? focusedStyle : {}),
           ...(dragAccept ? acceptStyle : {}),
           ...(draggReject ? rejectStyle : {}),
         }
         return (
-          <Grid {...getRootProps({ _style })}
+          <Grid {...getRootProps({ style })}
             id={elementId}
             container
             direction="row"

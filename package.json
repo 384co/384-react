@@ -1,7 +1,7 @@
 {
   "name": "384-react",
   "version": "1.1.0",
-  "description": "React components for 384 Lib",
+  "description": "React components and utilities for 384 Lib in a monorepo",
   "types": "dist/384.react.d.ts",
   "main": "dist/index.js",
   "repository": "https://github.com/384co/384-react.git",
@@ -35,7 +35,6 @@
     "react-dom": "^17.0.0 || ^18.0.0"
   },
   "devDependencies": {
-    "@384/components": "link:../packages/components",
     "@babel/cli": "^7.23.9",
     "@babel/core": "^7.23.9",
     "@babel/node": "^7.23.9",

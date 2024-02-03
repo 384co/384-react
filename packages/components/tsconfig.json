@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "module": "esnext",
-    "target": "es5",
+    "target": "ES2022",
     "lib": [
       "es2020",
       "dom"
@@ -28,8 +28,9 @@
   },
   "include": [
     "./src"
-  ],
+, "playing/Login", "playing/UserRegistration", "playing/DropZone", "playing/Invite", "playing/UserLogin", "todo/UserRegistration", "todo/UserLogin", "todo/Invite", "todo/Login", "todo/DropZonee"  ],
   "exclude": [
+    "./todo",
     "**/.*/",
     "**/build",
     "**/cypress",

@@ -5,8 +5,11 @@
   "private": true,
   "type": "module",
   "dependencies": {
+    "@384/components" : "link:../packages/components/build",
+    "@384/core" : "link:../packages/core/build",
     "@emotion/react": "^11.9.0",
     "@emotion/styled": "^11.8.1",
+    "@emotion/cache": "^11.8.1",
     "@mui/icons-material": "5.8.4",
     "@mui/material": "5.8.2",
     "@mui/styles": "^5.15.1",
@@ -29,7 +32,6 @@
     "react-scripts": "5.0.1",
     "react-swipeable-views": "^0.14.0",
     "react-swipeable-views-utils": "^0.14.0",
-    "@384/components" : "link:../packages/components/build",
     "styled-components": "^5.3.5",
     "tss-react": "^4.9.3",
     "typescript": "^5.2.0",
@@ -86,6 +88,8 @@
     "@types/jest": "^27.4.0",
     "@types/lodash": "^4.14.202",
     "@types/react-swipeable-views": "^0.13.5",
+    "@types/react-dom": "18.2.18",
+    "@types/react-router-dom": "^5.3.3",
     "@types/uuid": "^9.0.8",
     "concurrently": "^8.2.2"
   }

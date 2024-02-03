@@ -130,3 +130,4 @@ build
 *.js
 !/*.js
 !/test/**/*.js
+yarn.lock

@@ -23,16 +23,6 @@
     "rimraf": "^5.0.5"
   },
   "peerDependencies": {
-    "@emotion/react": "^11.5.0",
-    "@emotion/styled": "^11.3.0",
-    "@mui/icons-material": "5.8.4",
-    "@mui/material": "5.8.2",
-    "@mui/styles": "^5.15.1",
-    "@mui/utils": "5.9.3",
-    "@types/react": "^17.0.0 || ^18.0.0",
-    "lib384": "link:../lib384",
-    "react": "^17.0.0 || ^18.0.0",
-    "react-dom": "^17.0.0 || ^18.0.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.23.9",

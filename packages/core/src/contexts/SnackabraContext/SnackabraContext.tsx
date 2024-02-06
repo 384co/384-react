@@ -1,13 +1,15 @@
 import * as React from "react"
+import { observer } from "mobx-react";
 import { SnackabraTypes } from "lib384"
-import { SnackabraStore } from "../../stores/index"
+import { SnackabraStore } from "../../stores"
 
 export type SnackabraContextType = {
   store: SnackabraStore | null
 }
 
-export interface SnackabraProviderProps extends React.PropsWithChildren<{}> {
+export interface SnackabraProviderProps {
   config: SnackabraTypes.SBServer
+  children?: React.ReactNode
 }
 
 const SnackabraContext = React.createContext<SnackabraContextType>({
@@ -22,7 +24,8 @@ export const useSnackabra = () => {
   return context;
 }
 
-export function SnackabraProvider({ children, config }: SnackabraProviderProps) {
+export const SnackabraProvider = observer((props: SnackabraProviderProps) => {
+  const {children, config} = props
   const [ready, setReady] = React.useState<boolean>(false)
   const [store, setSBContext] = React.useState<SnackabraStore | null>(null)
 
@@ -32,9 +35,8 @@ export function SnackabraProvider({ children, config }: SnackabraProviderProps) 
     const _sbContext = new SnackabraStore(config)
     _sbContext.ready.then(() => {
       setSBContext(_sbContext)
-      setReady(true)
     })
-  }, [ready])
+  }, [config, ready])
 
   React.useEffect(() => {
     if (store && ready) {
@@ -42,6 +44,12 @@ export function SnackabraProvider({ children, config }: SnackabraProviderProps) 
       console.log(store)
     }
   }, [store, ready])
+
+  React.useEffect(() => {
+    if (store) {
+      setReady(true)
+    }
+  }, [store])
 
 
   return (<>
@@ -56,4 +64,4 @@ export function SnackabraProvider({ children, config }: SnackabraProviderProps) 
     }
   </>)
 
-};
+});

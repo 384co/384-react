@@ -1,4 +1,6 @@
 import React, { ReactNode } from "react"
+import {toJS} from 'mobx'
+import { observer } from "mobx-react";
 import { useContext, useEffect } from "react";
 import { useAuth } from "../AuthContext/AuthContext";
 import IndexedKV from "../../utils/IndexedKV";
@@ -7,15 +9,16 @@ import { useSnackabra } from "../SnackabraContext/SnackabraContext";
 import { ChannelStore } from "../../stores/ChannelStore/Channel.Store";
 import {IVault, IVaultContextInterface} from "./VaultContext.d"
 import {VaultConfig} from "../Provide384/Provide384.d"
+import { ChannelMessage } from "src/stores/ChannelStore/Channel.Store.d";
 
 const VaultContext = React.createContext<IVaultContextInterface>({
-  wallet: null,
+  vault: null,
   id: null,
   identity: null,
   controlPlaneMessages: [],
   sendKnownUser: async () => { return {} },
   sendKeyClaim: async () => { return {} },
-  setWallet: () => { },
+  setVault: () => { },
   destroy: () => { },
   setStrongPinJwk: () => { },
   KeyClaimMessageType: '',
@@ -26,14 +29,15 @@ const VaultContext = React.createContext<IVaultContextInterface>({
 
 export const useVault = () => useContext(VaultContext);
 
-export const VaultProvider = ({ children, config }: { children: ReactNode, config: VaultConfig }) => {
+export const VaultProvider = observer((props: { children?: ReactNode, config: VaultConfig } ) => {
+  const { children, config } = props
   const KeyClaimMessageType = config.message_namespace + 'KEY_CLAIM_V3'
   const KnownUsersMessageType = config.message_namespace + 'KNOWN_USERS_V3'
   const InviteMessageType = config.message_namespace + 'INVITE_V3'
-  const walletDb = new IndexedKV({ db: "data", table: "wallet" });
+  const vaultDb = new IndexedKV({ db: "data", table: "vault" });
   const auth = useAuth()
   const SB = useSnackabra()
-  const [wallet, setWallet] = React.useState<IVault | null>(null);
+  const [vault, setVault] = React.useState<IVault | null>(null);
   const [identity, setIdentity] = React.useState<any>(null);
   const [id, setId] = React.useState<any>(null);
   const [registration, setRegistration] = React.useState<any>(null);
@@ -42,15 +46,15 @@ export const VaultProvider = ({ children, config }: { children: ReactNode, confi
 
   useEffect(() => {
     if (channel) {
-      if (channel?.messages) {
-        receiveMessages(channel?.messages)
+      if (channel.messages.length > 0) {
+        receiveMessages(channel.messages)
       }
     }
-  }, [channel])
+  }, [channel, channel?.messages])
 
   useEffect(() => {
 
-    loadWallet()
+    loadVault()
   }, [])
 
   useEffect(() => {
@@ -73,10 +77,10 @@ export const VaultProvider = ({ children, config }: { children: ReactNode, confi
 
   useEffect(() => {
     if (!auth.isReady || !registration) return
-    auth.encrypt(JSON.stringify(registration)).then((e) => {
+    auth.encrypt(JSON.stringify(registration)).then((e: any) => {
       if (e) {
         console.log(e)
-        walletDb.setItem(registration.channelId + '_wallet', encodeURIComponent(e.string()))
+        vaultDb.setItem(registration.channelId + '_vault', encodeURIComponent(e.string()))
         auth.prompt(e.string())
       } else {
         throw new Error('something broke!')
@@ -90,8 +94,8 @@ export const VaultProvider = ({ children, config }: { children: ReactNode, confi
     }
   }, [auth.afterAuth])
 
-  const loadWallet = async () => {
-    walletDb.openCursor(/_wallet/, (w: any) => {
+  const loadVault = async () => {
+    vaultDb.openCursor(/_vault/, (w: any) => {
       if (w.length === 0) return
       console.log(w)
       auth.prompt(decodeURIComponent(w[0].value))
@@ -99,16 +103,16 @@ export const VaultProvider = ({ children, config }: { children: ReactNode, confi
   }
 
   const onAuth = (d: string) => {
-    const wallet = JSON.parse(d)
-    setIdentity(wallet.key)
-    setId(wallet.channelId)
-    setWallet(wallet)
+    const vault = JSON.parse(d)
+    setIdentity(vault.key)
+    setId(vault.channelId)
+    setVault(vault)
   }
 
   const destroy = async () => {
-    console.log('destroying wallet', id + '_wallet')
-    walletDb.removeItem(id + '_wallet').then(() => {
-      console.log('wallet destroyed')
+    console.log('destroying vault', id + '_vault')
+    vaultDb.removeItem(id + '_vault').then(() => {
+      console.log('vault destroyed')
       window.location.reload()
     }).catch((e: unknown) => {
       if (e instanceof Error)
@@ -129,11 +133,10 @@ export const VaultProvider = ({ children, config }: { children: ReactNode, confi
     return msg;
   }
 
-
   const receiveMessages = async (msgs: any[]) => {
     const messagePromises = []
-
-    for (let i in msgs) {
+    const _msgs: ChannelMessage[] = toJS(msgs);
+    for (let i in _msgs) {
       const msg = JSON.parse(msgs[i].text)
       switch (msg.messageType) {
         case KeyClaimMessageType:
@@ -177,10 +180,10 @@ export const VaultProvider = ({ children, config }: { children: ReactNode, confi
   }
 
   return (<VaultContext.Provider value={{
-    wallet,
+    vault,
     id,
     identity,
-    setWallet,
+    setVault,
     sendKnownUser,
     sendKeyClaim,
     destroy,
@@ -190,7 +193,7 @@ export const VaultProvider = ({ children, config }: { children: ReactNode, confi
     KnownUsersMessageType,
     InviteMessageType,
   }}>{children} </VaultContext.Provider>)
-};
+});
 
 export default VaultContext;
 

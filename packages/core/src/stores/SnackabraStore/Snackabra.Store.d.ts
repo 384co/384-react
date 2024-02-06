@@ -1,5 +1,6 @@
 import { ChannelStore } from "../ChannelStore/Channel.Store.d"
 import {SnackabraStore} from "./Snackabra.Store"
+export * from './Snackabra.Store'
 export type Contacts = { [key: `${JsonWebKey['x']} ${JsonWebKey['y']}`]: Contact }
 
 export type Contact = {
@@ -16,6 +17,7 @@ export type SerializedChannel = {
   readyResolver?: any;
 }
 
+export type Channel = (SerializedChannel | ChannelStore)
 export type Channels = { [key: string]: (SerializedChannel | ChannelStore) }
 export type KeyOrPubIdentifier = PubIdentifier | JsonWebKey
 

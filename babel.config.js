@@ -11,17 +11,18 @@ module.exports = function (api) {
 
   const defaultAlias = {
     '@384/components': resolveAliasPath('./packages/components/src'),
+    '@384/core': resolveAliasPath('./packages/core/src'),
   };
 
   const presets = [
     [
       '@babel/preset-env',
       {
-        bugfixes: true,
-        browserslistEnv: process.env.BABEL_ENV || process.env.NODE_ENV,
-        debug: process.env.MUI_BUILD_VERBOSE === 'true',
+        // bugfixes: true,
+        // browserslistEnv: process.env.BABEL_ENV || process.env.NODE_ENV,
+        debug: true,
         modules: useESModules ? false : 'commonjs',
-        shippedProposals: api.env('modern'),
+        // shippedProposals: api.env('modern'),
       },
     ],
     [
@@ -32,7 +33,6 @@ module.exports = function (api) {
     ],
     '@babel/preset-typescript',
   ];
-
   const plugins = [
     [
       'babel-plugin-macros',
@@ -60,18 +60,7 @@ module.exports = function (api) {
     ],
   ];
 
-  // if (process.env.NODE_ENV === 'production') {
-  //   plugins.push(...productionPlugins);
-  // }
-  if (process.env.NODE_ENV === 'test') {
-    plugins.push([
-      'babel-plugin-module-resolver',
-      {
-        alias: defaultAlias,
-        root: ['./'],
-      },
-    ]);
-  }
+
 
   return {
     assumptions: {
@@ -80,12 +69,12 @@ module.exports = function (api) {
     presets,
     plugins,
     ignore: [/@babel[\\|/]runtime/], // Fix a Windows issue.
-    overrides: [
-      {
-        exclude: /\.test\.(js|ts|tsx)$/,
-        plugins: ['@babel/plugin-transform-react-constant-elements'],
-      },
-    ],
+    // overrides: [
+    //   {
+    //     exclude: /\.test\.(js|ts|tsx)$/,
+    //     plugins: ['@babel/plugin-transform-react-constant-elements'],
+    //   },
+    // ],
     env: {
       coverage: {
         plugins: [
@@ -114,16 +103,16 @@ module.exports = function (api) {
           ],
         ],
       },
-      rollup: {
-        plugins: [
-          [
-            'babel-plugin-module-resolver',
-            {
-              alias: defaultAlias,
-            },
-          ],
-        ],
-      },
+      // rollup: {
+      //   plugins: [
+      //     [
+      //       'babel-plugin-module-resolver',
+      //       {
+      //         alias: defaultAlias,
+      //       },
+      //     ],
+      //   ],
+      // },
       legacy: {
         plugins: [
           // IE11 support

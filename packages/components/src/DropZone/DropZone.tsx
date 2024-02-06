@@ -1,4 +1,4 @@
-import React, { DragEvent } from 'react'
+import * as React from 'react'
 //@ts-ignore
 import { isEvtWithFiles, allFilesAccepted, acceptPropAsAcceptAttr } from 'react-dropzone/dist/es/utils/index.js'
 import Dropzone from 'react-dropzone'
@@ -98,7 +98,7 @@ const DropZoneComponent = (props: DropZoneProps) => {
 
   }
 
-  const onDragEnter = (event: DragEvent) => {
+  const onDragEnter = (event: any) => {
     if (isEvtWithFiles(event)) {
       Promise.resolve(fromEvent(event)).then(function (files) {
 

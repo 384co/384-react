@@ -1,3 +1,4 @@
+export * from './IndexedKV/IndexedKV';
 export type IndexedKVOptions = { db: string; table: string; }
 
 declare class IndexedKV {

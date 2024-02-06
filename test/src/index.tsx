@@ -2,7 +2,6 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
 import Routes from "./pages/Routes";
-import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 import reportWebVitals from "./reportWebVitals";
 
 const root = ReactDOM.createRoot(
@@ -10,19 +9,12 @@ const root = ReactDOM.createRoot(
 );
 
 root.render(
-  // React.StrictMode causes double render in development, but not in production
-  // <React.StrictMode>
+
   <Routes />
-  // </React.StrictMode>
+
 );
 
-const onUpdate = (registration: ServiceWorkerRegistration) => {
-  console.log('onUpdate', registration)
-  if (registration.waiting) {
-    registration.waiting.postMessage({ type: 'SKIP_WAITING' })
-    window.location.reload()
-  }
-}
+
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.

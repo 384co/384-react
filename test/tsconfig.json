@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es2017",
+    "target": "ES2022",
     "lib": ["es6", "dom", "dom.iterable", "esnext"],
     "types": ["cypress", "node"],
     "baseUrl": "./src",

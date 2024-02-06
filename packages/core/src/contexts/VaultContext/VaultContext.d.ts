@@ -6,10 +6,10 @@ export interface IVault {
 }
 
 export interface IVaultContextInterface {
-  wallet: IVault | null,
+  vault: IVault | null,
   id: string | null,
   identity: any,
-  setWallet: React.Dispatch<React.SetStateAction<any>>,
+  setVault: React.Dispatch<React.SetStateAction<any>>,
   controlPlaneMessages: any[],
   sendKnownUser: (user: any) => Promise<__.SnackabraTypes.ChannelMessage>,
   sendKeyClaim: (claim: any) => Promise<__.SnackabraTypes.ChannelMessage>,

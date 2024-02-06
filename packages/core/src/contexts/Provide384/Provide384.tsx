@@ -1,9 +1,9 @@
 import * as React from "react"
 import * as __ from "lib384"
-import SnackabraProvider from "../SnackabraContext";
+import { SnackabraProvider } from "../SnackabraContext/SnackabraContext";
 import AuthProvider from "../AuthContext";
-import SBFileHelperProvider  from "../SBFileHelperContext";
-import VaultProvider  from "../VaultContext";
+import SBFileHelperProvider from "../SBFileHelperContext";
+import VaultProvider from "../VaultContext";
 import { React384ContextType, AppConfig, VaultConfig } from "./Provide384.d";
 
 
@@ -18,7 +18,7 @@ export const use384 = () => {
 }
 
 export function Provide384({ children, config }: React384ContextType) {
-    if(!config) throw new Error('Provide384 requires a config object')
+    if (!config) throw new Error('Provide384 requires a config object')
     const SBConfig = {
         channel_server: config.channel_server,
         channel_ws: config.channel_ws,

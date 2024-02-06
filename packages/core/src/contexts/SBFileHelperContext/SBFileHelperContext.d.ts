@@ -4,7 +4,7 @@ import ChannelStore from 'src/stores/ChannelStore/Channel.Store'
 
 export interface SnackabraProviderProps extends React.PropsWithChildren<{}> {
   config: SnackabraTypes.SBServer
-
+  children?: React.ReactNode
 }
 
 export interface SBFileHelperContextContextType {
@@ -12,6 +12,7 @@ export interface SBFileHelperContextContextType {
   knownShards: Map<string, string>
   ignoreProcessing: Map<string, string>
   uploadFile: (fileHash: string, messageType: string, channel: ChannelStore) => Promise<any>
+  removeFile: (fileHash: string) => void
   uploadConfirmed: (message: { shardId: string, handle: any }) => void
   download: (handle: any) => Promise<ArrayBuffer>
   progress: number

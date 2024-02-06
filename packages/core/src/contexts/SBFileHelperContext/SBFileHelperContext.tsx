@@ -1,4 +1,5 @@
 import * as React from "react"
+import { observer } from "mobx-react";
 import * as __ from "lib384/dist/384.esm"
 import { useSnackabra } from '../SnackabraContext/SnackabraContext';
 import { ChannelStore } from "../../stores/ChannelStore/Channel.Store";
@@ -10,6 +11,7 @@ const SBFileHelperContext = React.createContext<SBFileHelperContextContextType>(
   knownShards: new Map(),
   ignoreProcessing: new Map(),
   uploadFile: async () => { return null },
+  removeFile: () => { },
   uploadConfirmed: () => { },
   download: async () => { return new ArrayBuffer(0) },
   progress: 0
@@ -23,13 +25,13 @@ export const useSBFH = () => {
   return context;
 }
 
-export function SBFileHelperProvider({ children, config }: SnackabraProviderProps) {
+export const SBFileHelperProvider = observer(({ children, config }: SnackabraProviderProps) => {
   const SB = useSnackabra()
   let toUpload = React.useRef<string[]>([])
   let uploaded = React.useRef<string[]>([])
+  let knownShards = React.useRef<Map<string, any>>(new Map());
   const SBFileSystem = new __.file.fs(config);
   const [fileHelper, setFileHelper] = React.useState<any>(null)
-  const [knownShards] = React.useState<Map<string, string>>(new Map())
   const [ignoreProcessing] = React.useState<Map<string, string>>(new Map())
   const [progress, setProgress] = React.useState(0);
 
@@ -65,7 +67,7 @@ export function SBFileHelperProvider({ children, config }: SnackabraProviderProp
     if (uploaded.current.length === toUpload.current.length) {
       resetUpload()
     }
-    knownShards.set(message.shardId, message.handle)
+    knownShards.current.set(message.shardId, message.handle)
   }
 
   const resetUpload = () => {
@@ -79,7 +81,7 @@ export function SBFileHelperProvider({ children, config }: SnackabraProviderProp
       console.log(fileHash)
       console.log(key, value)
       if (fileHash === value.uniqueShardId) {
-
+        if (knownShards.current.has(fileHash)) return true;
         console.log(`---- uploading file ${key} with hash ${fileHash} ...`)
         const buffer = fileHelper.globalBufferMap.get(fileHash)
         if (!buffer) throw new Error(`**** failed to find buffer for ${fileHash} (should not happen)`)
@@ -108,20 +110,41 @@ export function SBFileHelperProvider({ children, config }: SnackabraProviderProp
     return false;
   }
 
-  const download = (handle: any): Promise<ArrayBuffer> => {
-    const sbServer = new __.Snackabra(config)
-    return sbServer.storage.fetchData(handle)
+  function downloadFile(arrayBuffer: ArrayBuffer, handle: any) {
+    // Create a Blob from the ArrayBuffer
+    const blob = new Blob([arrayBuffer], { type: handle.mimeType });
+  
+    // Create a download link
+    const downloadLink = document.createElement('a');
+    downloadLink.href = window.URL.createObjectURL(blob);
+    downloadLink.download = handle.name;
+
+    // Trigger the click event to start the download
+    downloadLink.click();
+
+    // Cleanup the URL object
+    window.URL.revokeObjectURL(downloadLink.href);
   }
-  console.log(knownShards)
+
+  const download = async (handle: any, performDownload: boolean = false): Promise<ArrayBuffer> => {
+    const sbServer = new __.Snackabra(config)
+    let fileAb = await sbServer.storage.fetchData(handle);
+    console.log(handle)
+    if(performDownload){
+      downloadFile(fileAb, handle)
+    }
+    return fileAb
+  }
   return (
     <SBFileHelperContext.Provider value={{
       fileHelper: fileHelper,
-      knownShards: knownShards,
+      knownShards: knownShards.current,
       ignoreProcessing: ignoreProcessing,
       uploadFile: uploadFile,
       uploadConfirmed: uploadConfirmed,
       progress: progress,
-      download: download
+      download: download,
+      removeFile: removeFile
     }}>
       {fileHelper !== null ?
         children
@@ -131,6 +154,6 @@ export function SBFileHelperProvider({ children, config }: SnackabraProviderProp
     </SBFileHelperContext.Provider>
   )
 
-};
+});
 
 export default SBFileHelperContext;

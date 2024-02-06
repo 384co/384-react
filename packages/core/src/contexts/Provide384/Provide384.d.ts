@@ -13,4 +13,5 @@ export interface AppConfig extends VaultConfig, SBServer {
 
 export interface React384ContextType extends React.PropsWithChildren<{}> {
     config: AppConfig
+    children?: React.ReactNode
 }

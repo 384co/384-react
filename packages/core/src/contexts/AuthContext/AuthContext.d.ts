@@ -2,6 +2,7 @@ import { AppConfig } from "../Provide384/Provide384";
 import { SnackabraProviderProps } from "../SnackabraContext/SnackabraContext.d";
 export interface AuthProviderProps extends SnackabraProviderProps, React.PropsWithChildren<{}> {
   config: AppConfig
+  children?: React.ReactNode
 }
 
 export type IEncrypted = {

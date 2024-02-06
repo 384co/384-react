@@ -1,4 +1,5 @@
 import * as React from "react"
+import { observer } from "mobx-react";
 import { _i_encrypt, _i_decrypt } from "../../utils/LocalCrypto/LocalCrypto";
 import { jwkFromPassphrase } from '../../utils/Vault/Vault';
 import { AuthProviderProps, IAuthContextInterface, IEncrypted, IDecrypted } from './AuthContext.d'
@@ -25,7 +26,7 @@ const AuthContext = React.createContext<IAuthContextInterface>({
   setPassPhrase: () => { return new Promise(() => { }) }
 });
 
-export const AuthProvider = ({ children, config }: AuthProviderProps) => {
+export const AuthProvider = observer(({ children, config }: AuthProviderProps) => {
   const [promptOpen, setPromptOpen] = React.useState(false)
   const [promptCallback, setPromptCallback] = React.useState<() => void>(() => { })
   const [afterAuth, setAfterAuth] = React.useState(null)
@@ -104,7 +105,7 @@ export const AuthProvider = ({ children, config }: AuthProviderProps) => {
     isReady,
     jwk
   }}>{children} </AuthContext.Provider>)
-};
+});
 
 export default AuthContext;
 

@@ -158,6 +158,7 @@ export class ChannelStore {
         }
         const messages = await this._db.getAll()
         console.log('got messages from db', messages)
+        console.trace()
         const newMessages = []
         if (messages.length > 0) {
             for (let x in messages) {
@@ -417,6 +418,14 @@ export class ChannelStore {
 
 
     };
+    // Perform budd operation with the given amount of storage in megabytes
+    budd = async (amount: number) => {
+
+        const endpoint = new SB.ChannelEndpoint(this.config, this.key, this.id);
+        let { storageLimit } = await endpoint.getStorageLimit()
+        if (storageLimit < amount * 1024 * 1024) throw new Error("Not enough storage")
+        return await endpoint.budd({ storage: amount * 1024 * 1024 });
+    }
 
     receiveMessage = (m: __.ChannelMessage, updateState = false) => {
         if (!this._db) throw new Error("no db");

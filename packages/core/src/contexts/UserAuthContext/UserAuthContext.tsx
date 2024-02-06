@@ -1,11 +1,11 @@
 import React, { createContext, useContext, useState } from 'react';
-import { useVault} from '../VaultContext/VaultContext';
+import { useVault } from '../VaultContext/VaultContext';
 import * as __ from 'lib384/dist/384.esm.js'
 import { useSnackabra } from '../SnackabraContext/SnackabraContext';
 import { jwkFromPassphrase } from '../../utils/Vault';
 import IndexedKV from '../../utils/IndexedKV';
 import { ChannelStore } from '../../stores/ChannelStore/Channel.Store';
-import {KeyPackage, KnownUser, User, UserAuthContextType} from './UserAuthContext.d';
+import { KeyPackage, KnownUser, User, UserAuthContextType } from './UserAuthContext.d';
 
 export const UserAuthContext = createContext<UserAuthContextType>({
   user: null,
@@ -14,7 +14,7 @@ export const UserAuthContext = createContext<UserAuthContextType>({
   encapsulateKey: async () => { },
   getIdentityFromEmail: async () => { return '' },
   getJWKFromEmail: async () => { return {} as JsonWebKey },
-  login: async () => { },
+  login: async () => { return false },
   registerInvite: async () => { return false },
   logout: () => { },
   register: async () => { return false },
@@ -46,7 +46,7 @@ export function UserAuthProvider(props: UserAuthProviderProps) {
   const readyResolver = React.useRef<any>(null)
   const readyFlag = React.useRef<Promise<boolean>>()
   const SB = useSnackabra()
-  const wallet = useVault()
+  const vault = useVault()
   const loadingTimer = React.useRef<any>(null)
   const possibleKeyPackages = React.useRef<KeyPackage[]>([])
   const sessionTimerRef = React.useRef<any>(null)
@@ -74,29 +74,29 @@ export function UserAuthProvider(props: UserAuthProviderProps) {
   }, [ready])
 
   React.useEffect(() => {
-    authDb.current.getItem('user').then((_user) => {
+    authDb.current.getItem('user').then((_user: any) => {
       const checked = localStorage.getItem('checked') === 'true'
       setRememberLogin(checked)
       if (_user && checked) {
         setUser(_user)
       }
     })
-    authDb.current.getItem('knownUsers').then((_knownUsers) => {
+    authDb.current.getItem('knownUsers').then((_knownUsers: any) => {
       if (_knownUsers && _knownUsers instanceof Map) {
         setKnownUser(_knownUsers)
       }
     })
-    authDb.current.getItem('invitedUsers').then((_invitedUsers) => {
+    authDb.current.getItem('invitedUsers').then((_invitedUsers: any) => {
       if (_invitedUsers && _invitedUsers instanceof Map) {
         setInvitedUsers(_invitedUsers)
       }
     })
-    authDb.current.getItem('messages').then((_messages) => {
+    authDb.current.getItem('messages').then((_messages: any) => {
       if (_messages) {
         setMessages(_messages)
       }
     })
-    authDb.current.getItem('possibleKeyPackages').then((_possibleKeyPackages) => {
+    authDb.current.getItem('possibleKeyPackages').then((_possibleKeyPackages: any) => {
       if (_possibleKeyPackages && _possibleKeyPackages.length > 0) {
         _possibleKeyPackages.forEach((k: KeyPackage) => {
           possibleKeyPackages.current.push(k)
@@ -126,35 +126,26 @@ export function UserAuthProvider(props: UserAuthProviderProps) {
   }, [rememberLogin, invitedUsers, knownUsers, user, channel, messages, authDb])
 
   React.useEffect(() => {
-    if (wallet.id && wallet.identity) {
-      const channelId = localStorage.getItem('channelId')
+    if (vault.id && vault.identity && !isLoggedIn) {
+      const channelId = localStorage.getItem('channelId');
       if (channelId && isValideSessionTimeout()) {
-        proceedWithLogin()
+        proceedWithLogin();
       }
     }
-  }, [])
+  }, [vault, isLoggedIn]);
 
   React.useEffect(() => {
-    digestControlPlaneMessages(wallet.controlPlaneMessages)
-  }, [wallet.controlPlaneMessages])
+    digestControlPlaneMessages(vault.controlPlaneMessages)
+  }, [vault.controlPlaneMessages])
 
   React.useEffect(() => {
-    if (loadingTimer.current) clearTimeout(loadingTimer.current)
-    if (!ready && messages.length === 0) {
-      loadingTimer.current = setTimeout(() => {
-        setReady(true)
-      }, 5000)
-    }
-  }, [ready, messages])
-
-  React.useEffect(() => {
-    if (!wallet.id) return
-    if (!wallet.identity) return
+    if (!vault.id) return
+    if (!vault.identity) return
     const channelId = localStorage.getItem('channelId')
     if (channelId && SB && !channel) {
       connect(channelId)
     }
-  }, [wallet, SB, channel])
+  }, [vault, SB, channel])
 
   React.useEffect(() => {
     if (user && user.channelId && rememberLogin) {
@@ -173,9 +164,9 @@ export function UserAuthProvider(props: UserAuthProviderProps) {
   }, [user, rememberLogin])
 
   const assert_initialized = () => {
-    if (!wallet.id) throw new Error('Wallet not initialized')
-    if (!wallet.identity) throw new Error('Wallet not initialized')
-    if (!SB) throw new Error('SB not initialized')
+    if (!vault.id) return
+    if (!vault.identity) return
+    if (!SB.store) throw new Error('SB not initialized')
   }
 
   const connect = async (channelId: string) => {
@@ -198,9 +189,9 @@ export function UserAuthProvider(props: UserAuthProviderProps) {
         if (!isValideSessionTimeout() && !rememberLogin) {
           logout()
         }
-      })
+      }, 1000)
     } else {
-      props.onFailedLogin()
+      throw new Error('Failed to join or connect')
     }
   }
 
@@ -269,13 +260,13 @@ export function UserAuthProvider(props: UserAuthProviderProps) {
     for (let i in messages) {
       const msg = messages[i]
       switch (msg.messageType) {
-        case wallet.KeyClaimMessageType:
+        case vault.KeyClaimMessageType:
           keyPackages.push(msg)
           break
-        case wallet.KnownUsersMessageType:
+        case vault.KnownUsersMessageType:
           knownUsersArray.push(msg)
           break
-        case wallet.InviteMessageType:
+        case vault.InviteMessageType:
           if (!msg.claimed) {
             invites.push(msg)
           }
@@ -293,7 +284,7 @@ export function UserAuthProvider(props: UserAuthProviderProps) {
       // alert('New messages received')
       console.log(possibleKeyPackages.current)
       console.log(knownUsers)
-      setMessages(_messages => [..._messages, ...messages])
+      setMessages((_messages: any) => [..._messages, ...messages])
       setReady(true)
 
     })
@@ -356,22 +347,24 @@ export function UserAuthProvider(props: UserAuthProviderProps) {
       });
   }
 
-  const login = async (email: string, password: string) => {
-    await readyFlag.current
-    let promiseArray = []
-    const salt = stringToUint8Array(email)
-    for (let i in possibleKeyPackages.current) {
-      const saltBuf = salt.buffer;
-      const recreatedKey = await __.strongphrase.recreateKey(password, saltBuf as any, props.config.iterations)
-      possibleKeyPackages.current[i].key = recreatedKey.key as JsonWebKey
-      promiseArray.push(getDecryptPromise(possibleKeyPackages.current[i]))
-    }
-    Promise.all(promiseArray).then(async (results) => {
-      if (results.includes(true)) {
-        // setIsLoggedIn(true)
-      } else {
-        props.onFailedLogin()
+  const login = (email: string, password: string): Promise<boolean> => {
+    return new Promise(async (resolve, reject) => {
+      await readyFlag.current
+      let promiseArray = []
+      const salt = stringToUint8Array(email)
+      for (let i in possibleKeyPackages.current) {
+        const saltBuf = salt.buffer;
+        const recreatedKey = await __.strongphrase.recreateKey(password, saltBuf as any, props.config.iterations)
+        possibleKeyPackages.current[i].key = recreatedKey.key as JsonWebKey
+        promiseArray.push(getDecryptPromise(possibleKeyPackages.current[i]))
       }
+      Promise.all(promiseArray).then(async (results) => {
+        if (results.includes(true)) {
+          resolve(true)
+        } else {
+          reject(Error('Failed to decrypt'))
+        }
+      })
     })
   };
 
@@ -380,7 +373,9 @@ export function UserAuthProvider(props: UserAuthProviderProps) {
     localStorage.removeItem('channelId')
     localStorage.removeItem('sessionTimeout')
     resetUserAuthState()
-    props.onLogout()
+    if (props.onLogout && typeof props.onLogout === 'function') {
+      props.onLogout()
+    }
   };
 
   const hasUser = async (email: string): Promise<boolean> => {
@@ -480,17 +475,17 @@ export function UserAuthProvider(props: UserAuthProviderProps) {
     }
     try {
 
-      await wallet.sendKnownUser({ x: identityJWK.x, y: identityJWK.y })
+      await vault.sendKnownUser({ x: identityJWK.x, y: identityJWK.y })
       knownUsers.set(identityJWK.x + ' ' + identityJWK.y, identityJWK.x + ' ' + identityJWK.y)
       const identity = await __.strongphrase.recreateKey(password, salt, props.config.iterations)
       console.log(identity)
-      const channelEndpoint = new __.NewSB.ChannelEndpoint(SB.store!.config, wallet.identity, wallet.id as string)
+      const channelEndpoint = new __.NewSB.ChannelEndpoint(SB.store!.config, vault.identity, vault.id as string)
       const SBServer = new __.NewSB.Snackabra(SB.store!.config)
       const c = await SBServer.create(SB.store!.config, channelEndpoint)
       if (c) {
         const _e_key = await encapsulateKey(c, identity)
         console.log(_e_key)
-        wallet.sendKeyClaim(_e_key)
+        vault.sendKeyClaim(_e_key)
         await addPossibleKeyPackages([_e_key])
         return true
       } else {

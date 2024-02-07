@@ -5,4 +5,4 @@ export *  from './SBFileHelperContext';
 export *  from './SnackabraContext';
 export *  from './UserAuthContext';
 export *  from './VaultContext';
-
+export * from './MUI';

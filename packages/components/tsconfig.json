@@ -28,7 +28,7 @@
   },
   "include": [
     "./src"
-, "playing/Login", "playing/UserRegistration", "playing/DropZone", "playing/Invite", "playing/UserLogin", "todo/UserRegistration", "todo/UserLogin", "todo/Invite", "todo/Login", "todo/DropZonee"  ],
+, "playing/Login", "playing/UserRegistration", "playing/DropZone", "playing/Invite", "playing/UserLogin", "todo/UserRegistration", "todo/UserLogin", "todo/Invite", "todo/Login", "todo/DropZonee", "../core/src/contexts/MUI"  ],
   "exclude": [
     "./todo",
     "**/.*/",

@@ -7,11 +7,34 @@ import IndexedKV from "../../utils/IndexedKV";
 import * as __ from 'lib384/dist/384.esm.js'
 import { useSnackabra } from "../SnackabraContext/SnackabraContext";
 import { ChannelStore } from "../../stores/ChannelStore/Channel.Store";
-import {IVault, IVaultContextInterface} from "./VaultContext.d"
-import {VaultConfig} from "../Provide384/Provide384.d"
-import { ChannelMessage } from "src/stores/ChannelStore/Channel.Store.d";
+import {VaultConfig} from "../Provide384/Provide384"
+import { ChannelMessage } from "src/stores/ChannelStore/Channel.Store";
+import Login from "./Login";
 
-const VaultContext = React.createContext<IVaultContextInterface>({
+export interface Vault {
+  channelId?: string
+  key?: JsonWebKey
+  walletId: string
+  originalLimit: number
+}
+
+type  VaultContext  = {
+  vault: Vault | null,
+  id: string | null,
+  identity: any,
+  setVault: React.Dispatch<React.SetStateAction<any>>,
+  controlPlaneMessages: any[],
+  sendKnownUser: (user: any) => Promise<__.SnackabraTypes.ChannelMessage>,
+  sendKeyClaim: (claim: any) => Promise<__.SnackabraTypes.ChannelMessage>,
+  destroy: () => void,
+  setStrongPinJwk: (jwk: JsonWebKey) => void,
+  KeyClaimMessageType: string,
+  KnownUsersMessageType: string,
+  InviteMessageType: string,
+}
+
+
+const VaultContext = React.createContext<VaultContext>({
   vault: null,
   id: null,
   identity: null,
@@ -37,7 +60,7 @@ export const VaultProvider = observer((props: { children?: ReactNode, config: Va
   const vaultDb = new IndexedKV({ db: "data", table: "vault" });
   const auth = useAuth()
   const SB = useSnackabra()
-  const [vault, setVault] = React.useState<IVault | null>(null);
+  const [vault, setVault] = React.useState<Vault | null>(null);
   const [identity, setIdentity] = React.useState<any>(null);
   const [id, setId] = React.useState<any>(null);
   const [registration, setRegistration] = React.useState<any>(null);
@@ -192,7 +215,9 @@ export const VaultProvider = observer((props: { children?: ReactNode, config: Va
     KeyClaimMessageType,
     KnownUsersMessageType,
     InviteMessageType,
-  }}>{children} </VaultContext.Provider>)
+  }}>
+    {id && identity ? children : <Login config={config}/>}
+  </VaultContext.Provider>)
 });
 
 export default VaultContext;

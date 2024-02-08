@@ -10,9 +10,7 @@ let cacheDb = new IndexedKV({
     table: 'cache'
 });
 
-
-// export type ChannelStoreTypeAlias = ChannelStoreType;
-
+export type ChannelMessage = __.SnackabraTypes.ChannelMessage
 export class ChannelStore {
     private _id: any;
     private _alias: any;
@@ -158,7 +156,6 @@ export class ChannelStore {
         }
         const messages = await this._db.getAll()
         console.log('got messages from db', messages)
-        console.trace()
         const newMessages = []
         if (messages.length > 0) {
             for (let x in messages) {
@@ -217,7 +214,6 @@ export class ChannelStore {
 
     set alias(alias) {
         if (!alias) {
-            // console.trace()
             return
         }
         this._alias = alias;
@@ -235,7 +231,6 @@ export class ChannelStore {
     set socket(socket) {
         if (!socket) {
             alert('no socket')
-            console.trace()
             return
         }
         this._socket = socket;

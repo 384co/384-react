@@ -60,7 +60,9 @@
     "@types/react": "^17.0.0 || ^18.0.0",
     "lib384": "link:../../../lib384",
     "react": "^17.0.0 || ^18.0.0",
-    "react-dom": "^17.0.0 || ^18.0.0"
+    "react-dom": "^17.0.0 || ^18.0.0",
+    "@mui/material": "^5.15.7",
+    "@mui/icons-material": "^5.15.7"
   },
   "peerDependenciesMeta": {
     "@types/react": {

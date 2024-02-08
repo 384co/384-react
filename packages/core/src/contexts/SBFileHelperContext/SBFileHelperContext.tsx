@@ -98,6 +98,7 @@ export const SBFileHelperProvider = observer(({ children, config }: SnackabraPro
             sender_username: SB.store!.getContact(channel.key).name,
             shardId: value.uniqueShardId,
             mimeType: value.type,
+            sbFile: value,
             handle: handle,
           })
         }

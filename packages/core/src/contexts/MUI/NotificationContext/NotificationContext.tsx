@@ -44,29 +44,60 @@ export function useNotifications() {
   return context;
 }
 
-function NotificationBar(props: { vertical: "top" | "bottom", horizontal: "left" | "center" | "right" }) {
+type NotificationBarProps = {
+  vertical: "top" | "bottom",
+  horizontal: "left" | "center" | "right",
+  onClose: CallableFunction,
+  open: boolean,
+  severity: "error" | "info" | "success" | "warning" | undefined
+  autoHideDuration: number,
+  message: string,
+  action: ReactNode | string
+}
 
-  const context = React.useContext(NotificationContext)
+
+function NotificationBar(props: NotificationBarProps) {
+  const [state, setState] = React.useState({
+    open: props.open,
+    message: props.message,
+    severity: props.severity,
+    action: props.action,
+    autoHideDuration: props.autoHideDuration,
+    horizontal: props.horizontal,
+    vertical: props.vertical
+  })
+  React.useEffect(() => {
+    setState({
+      open: props.open,
+      message: props.message,
+      severity: props.severity,
+      action: props.action,
+      autoHideDuration: props.autoHideDuration,
+      horizontal: props.horizontal,
+      vertical: props.vertical
+    })
+
+  }, [props.open, props.message, props.severity, props.action, props.autoHideDuration, props.horizontal, props.vertical])
 
   const handleClose = () => {
-    context.setOpen(false);
+    props.onClose();
   };
 
   return (
     <Portal>
       <Snackbar
-        id={'notification-bar-' + context.severity}
+        id={'notification-bar-' + state.severity}
         anchorOrigin={{
-          vertical: props.vertical,
-          horizontal: props.horizontal,
+          vertical: state.vertical,
+          horizontal: state.horizontal,
         }}
-        open={context.open}
+        open={state.open}
         onClose={handleClose}
-        autoHideDuration={context.autoHideDuration}
+        autoHideDuration={state.autoHideDuration}
       >
-        <Alert classes={{ message: 'message-overflow' }} onClose={handleClose} severity={context.severity}>
-          {context.message}
-          {context.action}
+        <Alert classes={{ message: 'message-overflow' }} onClose={handleClose} severity={state.severity}>
+          {state.message}
+          {state.action}
         </Alert>
       </Snackbar>
     </Portal>
@@ -82,6 +113,11 @@ export const Provider = ({ children }: { children: ReactNode }) => {
   const [autoHideDuration, setAutoHideDuration] = useState(60000);
   const [vertical, setVertical] = useState<"top" | "bottom">("bottom");
   const [horizontal, setHorizontal] = useState<"left" | "center" | "right">("center");
+
+
+  const onClose = () => {
+    setOpen(false)
+  }
 
   const showError = (message: string, action?: ReactNode | string) => {
     setSeverity('error')
@@ -137,7 +173,17 @@ export const Provider = ({ children }: { children: ReactNode }) => {
     showInfo
   }}>
     {children}
-    <NotificationBar vertical={vertical} horizontal={horizontal} />
+    <NotificationBar
+      vertical={vertical}
+      horizontal={horizontal}
+      open={open}
+      onClose={onClose}
+      severity={severity}
+      autoHideDuration={autoHideDuration}
+      message={message}
+      action={action}
+
+    />
   </NotificationContext.Provider>)
 };
 

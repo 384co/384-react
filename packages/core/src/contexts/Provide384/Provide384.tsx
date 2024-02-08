@@ -4,7 +4,23 @@ import { SnackabraProvider } from "../SnackabraContext/SnackabraContext";
 import AuthProvider from "../AuthContext";
 import SBFileHelperProvider from "../SBFileHelperContext";
 import VaultProvider from "../VaultContext";
-import { React384ContextType, AppConfig, VaultConfig } from "./Provide384.d";
+import { SBServer } from "lib384";
+export interface VaultConfig {
+    message_namespace?: string
+    vault_from_384_os?: string
+    jwk_from_384_os?: JsonWebKey
+}
+
+export interface AppConfig extends VaultConfig, SBServer {
+    salt?: Uint8Array,
+    iterations?: number,
+}
+
+export interface React384ContextType extends React.PropsWithChildren<{}> {
+    config: AppConfig
+    children?: React.ReactNode
+}
+
 
 
 const React384Context = React.createContext({});
@@ -32,7 +48,7 @@ export function Provide384({ children, config }: React384ContextType) {
     }
 
     const vConfig: VaultConfig = {
-        message_namespace: config.message_namespace,
+        message_namespace: config.message_namespace || '384_OS_',
         vault_from_384_os: config.vault_from_384_os,
         jwk_from_384_os: config.jwk_from_384_os
     }

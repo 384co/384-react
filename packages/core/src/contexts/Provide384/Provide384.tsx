@@ -48,7 +48,7 @@ export function Provide384({ children, config }: React384ContextType) {
     }
 
     const vConfig: VaultConfig = {
-        message_namespace: config.message_namespace || '384_OS_',
+        message_namespace: typeof config.message_namespace === 'string' ? config.message_namespace : '384_OS_',
         vault_from_384_os: config.vault_from_384_os,
         jwk_from_384_os: config.jwk_from_384_os
     }

@@ -1,8 +1,32 @@
 import { makeAutoObservable, onBecomeUnobserved, configure, toJS, autorun } from "mobx";
 import * as __ from "lib384/dist/384.esm.js";
-import ChannelStore from "../ChannelStore/Channel.Store";
+import { ChannelStore } from "../ChannelStore/Channel.Store";
 import IndexedKV from "../../utils/IndexedKV";
-import {Contacts, Channels, Contact, KeyOrPubIdentifier} from "./Snackabra.Store.d"
+
+export * from '../ChannelStore/Channel.Store'
+export type Contacts = { [key: `${JsonWebKey['x']} ${JsonWebKey['y']}`]: Contact }
+
+export type Contact = {
+  _id: string;
+  name: string;
+  key?: JsonWebKey;
+  alias?: string;
+}
+
+export type SerializedChannel = {
+  id: string;
+  alias?: string;
+  key?: JsonWebKey;
+  readyResolver?: any;
+}
+
+export type Channel = (SerializedChannel | ChannelStore)
+export type Channels = { [key: string]: (SerializedChannel | ChannelStore) }
+export type KeyOrPubIdentifier = PubIdentifier | JsonWebKey
+
+export type PubIdentifier = `${JsonWebKey['x']} ${JsonWebKey['y']}`
+
+export interface SBStore extends SnackabraStore { }
 
 
 console.log("=========== mobx-snackabra-store loading ===========")
@@ -19,7 +43,7 @@ configure({
   disableErrorBoundaries: false
 });
 
-export class SnackabraStore  {
+export class SnackabraStore {
 
   readyResolver!: () => void;
   config: __.SnackabraTypes.SBServer = {
@@ -200,7 +224,7 @@ export class SnackabraStore  {
     this.contacts = Object.assign(this.contacts, contacts);
   }
 
-  getContact = (keyOrPubIdentifier: KeyOrPubIdentifier): Contact  => {
+  getContact = (keyOrPubIdentifier: KeyOrPubIdentifier): Contact => {
     try {
       if (typeof keyOrPubIdentifier === 'string') {
         const name = typeof this.contacts[keyOrPubIdentifier] !== 'undefined' ? this.contacts[keyOrPubIdentifier] : 'Unamed';
@@ -231,7 +255,7 @@ export class SnackabraStore  {
       this.save()
       return this._contacts[_id]
     }
-    const _id = keyOrPubIdentifier.x+' '+keyOrPubIdentifier.y as `${JsonWebKey['x']} ${JsonWebKey['y']}`;
+    const _id = keyOrPubIdentifier.x + ' ' + keyOrPubIdentifier.y as `${JsonWebKey['x']} ${JsonWebKey['y']}`;
     this._contacts[_id] = contact
     this.save()
     return this._contacts[_id]
@@ -255,17 +279,22 @@ export class SnackabraStore  {
   joinChannel = (channelId: string, key?: JsonWebKey): Promise<ChannelStore> => {
     return new Promise(async (resolve, reject) => {
       try {
-        let channelStore = new ChannelStore(this.config, channelId);
-        if (key) {
-          channelStore.key = key
-        }
-        let channel = await channelStore.connect()
-        if (channel instanceof ChannelStore) {
-          this._channels[channel.id] = channel;
-          await this.save();
-          resolve(channel);
+        if (this._channels[channelId] && this._channels[channelId] instanceof ChannelStore && this._channels[channelId].key.x === key.x) {
+          let channelStore = this._channels[channelId] as ChannelStore;
+          resolve(await channelStore.connect());
         } else {
-          throw new Error('Channel not created')
+          let channelStore = new ChannelStore(this.config, channelId);
+          if (key) {
+            channelStore.key = key
+          }
+          let channel = await channelStore.connect()
+          if (channel instanceof ChannelStore) {
+            this._channels[channel.id] = channel;
+            await this.save();
+            resolve(channel);
+          } else {
+            throw new Error('Channel not created')
+          }
         }
       } catch (e) {
         console.error(e)

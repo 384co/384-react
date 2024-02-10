@@ -1,8 +1,8 @@
 import React from 'react'
 import { DropZone } from "@384/components"
-import { Button, Chip, Grid, Paper, Typography, useTheme } from "@mui/material"
-import { useSBFH, useVault, use384, useSnackabra } from '@384/core';
-
+import { Button, Chip, Grid, IconButton, Paper, Typography, useTheme } from "@mui/material"
+import { useSBFH, useVault, useSnackabra } from '@384/core';
+import DownloadIcon from '@mui/icons-material/Download';
 
 
 
@@ -51,10 +51,27 @@ const DropZoneTest = () => {
 
     const parseFiles = () => {
         for (const [key, value] of SBFH.fileHelper.finalFileList.entries()) {
+            console.log('value', JSON.stringify(value))
             setFiles([...files, value])
         }
     }
-    console.log()
+
+    const removeFile = (file: any) => {
+        SBFH.removeFile(file.uniqueShardId)
+        const _files = files.filter((f) => f !== file)
+        setFiles(_files)
+    }
+
+    const download = async (file: any) => {
+        const knownShard = SBFH.knownShards.get(file.uniqueShardId)
+        console.log(knownShard)
+        let handle = knownShard.handle
+        handle.mimeType = file.type
+        handle.name = file.name
+        console.log(handle, file)
+        return await SBFH.download(handle, true)
+    }
+
     return (
         <Grid
         container
@@ -74,11 +91,14 @@ const DropZoneTest = () => {
                             {files.map((file, index) => {
                                 return (
                                     <Chip
-                                        key={index}
-                                        label={file.name}
-                                        onDelete={() => { }}
-                                        sx={{ mr: 2 }}
-                                    />
+                                    key={index}
+                                    avatar={!SBFH.knownShards.has(file.uniqueShardId) ? <IconButton onClick={() => { download(file) }}>
+                                        <DownloadIcon />
+                                    </IconButton> : <></>}
+                                    label={file.name}
+                                    onDelete={() => { removeFile(file) }}
+                                    sx={{ mr: 2 }}
+                                />
                                 )
                             })
                             }

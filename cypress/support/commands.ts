@@ -90,6 +90,11 @@
 // });
 
 import { faker } from '@faker-js/faker';
+import { v4 as uuidv4 } from 'uuid';
+
+Cypress.Commands.add('getUUID', () => {
+    return uuidv4();
+});
 
 Cypress.Commands.add('generateFakeUsers', (count: number) => {
     const fakeUsers: {password: string, email: string} = [];

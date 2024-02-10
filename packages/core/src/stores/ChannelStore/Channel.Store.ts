@@ -1,5 +1,5 @@
 import { makeAutoObservable, onBecomeUnobserved, onBecomeObserved, toJS } from "mobx";
-import { orderBy } from 'lodash';
+import { orderBy, uniqBy } from 'lodash';
 import IndexedKV from "../../utils/IndexedKV";
 import * as __ from "lib384/dist/384.esm.js";
 let SB = __.NewSB;
@@ -25,6 +25,7 @@ export class ChannelStore {
     private _savingTimout?: number;
     private _getOldMessagesMap: Map<string, any> = new Map();
     private _db;
+    private _messageTypes: string[] = [];
     messages: __.ChannelMessage[] = [];
     readyResolver!: () => void;
     ChannelStoreReadyFlag = new Promise<void>((resolve) => {
@@ -404,6 +405,7 @@ export class ChannelStore {
 
             this.motd = c.motd || '';
             this.getOldMessages(100);
+            this.status = c.status as __.SnackabraTypes.ChannelSocket['status']
             this.readyResolver();
             await this.save();
             return this
@@ -425,11 +427,17 @@ export class ChannelStore {
     receiveMessage = (m: __.ChannelMessage, updateState = false) => {
         if (!this._db) throw new Error("no db");
         if (updateState) {
-            console.warn('adding message to state', m)
-            this.messages.push(m)
+
+            if (!this.messages.some((existingMessage) => existingMessage._id === m._id)) {
+                // If the message doesn't exist, add it to the state
+                console.warn('adding message to state', m)
+                this.messages.push(m)
+            }
+
         }
         this._db.setItem(m._id as string, m)
     };
+
 
 }
 

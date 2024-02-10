@@ -13,6 +13,7 @@
     "start": "tsc -w ",
     "start:react": "cd test && pnpm start",
     "build": "lerna run --scope \"@384/*\" build",
+    "build:all": "pnpm install && pnpm build && rm -rf node_modules",
     "test:v1": "concurrently --names \"UI,TSC,CYPRESS\" -c \"bgBlue.bold,bgMagenta.bold,bgGreen.bold\" \"pnpm start:react\" \"pnpm start\" \"pnpm cypress:open\"",
     "test:cli": "cypress run --spec \"cypress/e2e/384-tests/*.js\" --browser chrome",
     "cypress:open": "cypress open"
@@ -20,9 +21,8 @@
   "dependencies": {
     "@types/node": "^20.11.16",
     "cross-env": "^7.0.3",
-    "rimraf": "^5.0.5"
-  },
-  "peerDependencies": {
+    "rimraf": "^5.0.5",
+    "uuid": "^9.0.1"
   },
   "devDependencies": {
     "@babel/cli": "^7.23.9",

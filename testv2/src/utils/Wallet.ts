@@ -1,32 +1,37 @@
+// @ts-nocheck
 // (c) 2023, 384 (tm)
 import * as __ from 'lib384/dist/384.esm'
-import elliptic from 'elliptic'
 const DEBUG = false;
 if (DEBUG) {
-    console.log("==== VAULT.js ====")
+    console.log("==== WALLET.js ====")
     console.warn("WARNING - running in DEBUG mode, disable for production")
 }
 
-export type VaultOptions = {
-    salt?: Uint8Array,
-    iterations?: number
+if (!elliptic.ec) {
+    // rely on elliptic having been loaded, presumably downloaded from:
+    // https://github.com/indutny/elliptic/blob/master/dist/elliptic.min.js
+    throw new Error('Module "elliptic" loaded, but elliptic.ec is not defined');
 }
-
-
 const ec = new elliptic.ec('p384'); // Use P-384 curve
 
-async function _vaultFromStrongpin(strongpin: string, salt: VaultOptions['salt'], iterations: VaultOptions['iterations']): Promise<JsonWebKey | null> {
-    // local helpers, we want this file (vault.js) to be self-contained
-    function hexToBase64(hexString: string): string {
-        const byteArray = new Uint8Array(hexString.match(/.{1,2}/g)!.map(byte => parseInt(byte, 16)));
-        return btoa(String.fromCharCode(...byteArray));
-    }
+// // just for local testing
+// function generateWallet() {
+//     const key = ec.genKeyPair();
+//     const publicKey = key.getPublic('hex');
+//     const privateKey = key.getPrivate('hex');
+//     return { publicKey, privateKey };
+// }
 
-    function hexToBase64Url(hexString: string): string {
-        return hexToBase64(hexString)
-            .replace(/\+/g, '-')
-            .replace(/\//g, '_')
-            .replace(/=+$/, '');
+async function _walletFromStrongpin(strongpin, salt, iterations) {
+    // local helpers, we want this file (wallet.js) to be self-contained
+    function hexToBase64(hexString) {
+        const byteArray = new Uint8Array(hexString.match(/.{1,2}/g).map(byte => parseInt(byte, 16)));
+        return btoa(String.fromCharCode.apply(null, byteArray));
+    }
+    function hexToBase64Url(hexString) {
+        let base64 = hexToBase64(hexString);
+        let base64url = base64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+        return base64url;
     }
 
     const hash = "SHA-384";
@@ -108,7 +113,7 @@ async function _vaultFromStrongpin(strongpin: string, salt: VaultOptions['salt']
 // const strongpinSalt = new Uint8Array([220, 54, 210, 73, 177, 131, 206, 246, 28, 119, 99, 64, 42, 187, 157, 13]);
 
 
-function validateOptions(options: VaultOptions): asserts options is { salt: Uint8Array, iterations: number } {
+function validateOptions(options) {
     if (!options) throw new Error("validateOptions: missing options")
     var { salt, iterations } = options
     // this process requires 16-byte salt, which should be random BUT unique for every
@@ -119,6 +124,7 @@ function validateOptions(options: VaultOptions): asserts options is { salt: Uint
     if (!iterations) iterations = 10000000
     // final version we do 10M iterations... IMPORTANT that production is 10M
     if (iterations < 10000000) console.warn("WARNING - using LESS THAN 10M ITERATIONS - test/dev only!")
+    return { salt: salt, iterations: iterations }
 }
 
 //
@@ -135,31 +141,39 @@ function validateOptions(options: VaultOptions): asserts options is { salt: Uint
 // we default to using strongpins, but this parameter can be any
 // entropy material in string form
 //
-export async function vaultFromStrongpin(strongpin: string, options: VaultOptions): Promise<JsonWebKey | null> {
-    if (!strongpin) throw new Error("vaultFromStrongpin: missing strongpin")
-    validateOptions(options)
-    const { salt, iterations } = options
-    return _vaultFromStrongpin(strongpin, salt, iterations)
+export async function walletFromStrongpin(
+    strongpin,
+    options = {}
+) {
+    if (!strongpin) throw new Error("walletFromStrongpin: missing strongpin")
+    const { salt, iterations } = validateOptions(options)
+    // if (DEBUG) {
+    //     console.log("==== walletFromStrongpin ====")
+    //     console.log("strongpin (key material): " + strongpin)
+    //     console.log("salt: " + salt)
+    //     console.log("iterations: " + iterations)
+    // }
+
+    return _walletFromStrongpin(strongpin, salt, iterations)
 }
 
-export function jwkFromPassphrase(strongphrase: string, options: VaultOptions): Promise<JsonWebKey | null> {
-    return vaultFromStrongpin(strongphrase, options)
+export function jwkFromPassphrase(strongphrase, options = {}) {
+    return walletFromStrongpin(strongphrase, options)
 }
 
-export async function generateRandomVault(options: VaultOptions): Promise<{ strongpin: string, jwk: JsonWebKey } | null> {
-    validateOptions(options)
-    const { salt, iterations } = options
+export async function generateRandomWallet(options = {}) {
+    const { salt, iterations } = validateOptions(options)
     let tries = 0;
     const maxTries = 20; // should be more than enough
     let randomStrongPin;
     let jwkFromStrongPin
-    // not all phrases/key material will work, so if vaultFromStrongpin returns 'null'
-    // we generate a new randomStrongPin and call vaultFromStrongpin again
+    // not all phrases/key material will work, so if walletFromStrongpin returns 'null'
+    // we generate a new randomStrongPin and call walletFromStrongpin again
     while (tries <= maxTries) {
         // use strongpin, "generate16" is a convenience function,
         // it will return a 4x4 set of strongpins (space separated)
         randomStrongPin = await __.crypto.strongpin.generate16();
-        jwkFromStrongPin = await _vaultFromStrongpin(randomStrongPin, salt, iterations)
+        jwkFromStrongPin = await _walletFromStrongpin(randomStrongPin, salt, iterations)
         if (jwkFromStrongPin) {
             if (DEBUG) console.log("Generated JWK from strongpin LOOKS GOOD:", jwkFromStrongPin)
             break;

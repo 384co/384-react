@@ -1,15 +1,17 @@
+import { Ready } from './Decorators'
 /**
 * @description
 * IndexedKV is a wrapper around IndexedDB that provides a simple interface for
 * storing and retrieving data.
 */
-export type IndexedKVOptions = { db: string; table: string; }
+
+type IndexedKVOptions = { db: string; table: string; }
 
 
 class IndexedKV {
-    readyResolver?: Function;
-    db?: IDBDatabase;
-    version?: number;
+    readyResolver: Function | undefined;
+    db: IDBDatabase | undefined;
+    version: number | undefined;
     openDatabaseIterations: number = 0;
     IndexedKVReadyFlag: Promise<boolean> = new Promise((resolve) => {
         this.readyResolver = resolve;
@@ -27,7 +29,7 @@ class IndexedKV {
         this.openDataBase();
     }
 
-    openDataBase = (version?: number) => {
+    openDataBase = (version: undefined | number = undefined) => {
         this.openDatabaseIterations++;
         console.log(`Opening database ${this.options.db}... version ${version ? version : 0}`)
         const openReq = globalThis.indexedDB.open(this.options.db, version);
@@ -46,9 +48,9 @@ class IndexedKV {
                 }
                 this.openDatabaseIterations = 0;
             } else {
-                if (this.openDatabaseIterations > 1) {
+                if(this.openDatabaseIterations > 1){
                     throw new Error(`Object store '${this.options.table}' does not exist in the database. Aborting...`);
-                } else {
+                }else{
                     this.db.close();
                     console.log(`Object store '${this.options.table}' does not exist in the database. Upgrading schema...`);
                     this.openDataBase(version + 1);
@@ -69,7 +71,7 @@ class IndexedKV {
      * @param {Function=} callback
      * @returns {Promise<Array<IDBRequest["result"]>>}
      */
-    openCursor(regex: RegExp, callback?: Function): Promise<Array<{ value: IDBCursorWithValue | unknown, key: string }>> {
+    openCursor(regex: string, callback: Function) {
         return new Promise(async (resolve, reject) => {
             await this.IndexedKVReadyFlag;
             try {
@@ -102,37 +104,6 @@ class IndexedKV {
             }
         });
     }
-
-
-    batchSet(items: Array<{ key: IDBValidKey, value: string | number | boolean | object | Array<any> }>): Promise<void> {
-        return new Promise(async (resolve, reject) => {
-            await this.IndexedKVReadyFlag;
-            try {
-                if (this.db) {
-                    const transaction = this.db.transaction([this.options.table], "readwrite");
-                    const objectStore = transaction.objectStore(this.options.table);
-                    items.forEach(item => {
-                        objectStore.put(item);
-
-                    });
-                    transaction.oncomplete = () => {
-                        console.warn('Batch set complete');
-                        resolve();
-                    };
-                    transaction.onerror = event => {
-                        console.error(event);
-                        reject(event);
-                    };
-                }
-                else {
-                    reject(new Error('db is not defined'));
-                }
-            } catch (e) {
-                reject(e);
-            }
-        });
-    }
-
     /**
      * setItem will add or replace an entry by key
      *
@@ -141,7 +112,8 @@ class IndexedKV {
      * @returns {Promise<IDBValidKey>}
      */
 
-    setItem(key: IDBValidKey, value: string | number | boolean | object | Array<any>): Promise<IDBRequest["result"]> {
+    @Ready
+    setItem(key: IDBValidKey, value: string | number | boolean | object | Array<any>) {
         return new Promise(async (resolve, reject) => {
             await this.IndexedKVReadyFlag;
             try {
@@ -194,7 +166,8 @@ class IndexedKV {
      * @param {StructuredCloneData} value
      * @returns {Promise<IDBValidKey | IDBRequest["result"]>}
      */
-    add(key: IDBValidKey, value: string | number | boolean | object | Array<any>): Promise<IDBRequest["result"]> {
+    @Ready
+    add(key: IDBValidKey, value: string | number | boolean | object | Array<any>) {
         return new Promise(async (resolve, reject) => {
             await this.IndexedKVReadyFlag;
             try {
@@ -235,6 +208,7 @@ class IndexedKV {
      * @param {string | number} key
      * @returns
      */
+    @Ready
     getItem(key: IDBValidKey): Promise<IDBRequest["result"] | null> {
         return new Promise(async (resolve, reject) => {
             await this.IndexedKVReadyFlag;
@@ -270,7 +244,8 @@ class IndexedKV {
      *
      * @returns {Promise<Array<any> | null>}
      */
-    getAll(): Promise<IDBRequest["result"][]> {
+    @Ready
+    getAll(): Promise<any[]> {
         return new Promise(async (resolve, reject) => {
             await this.IndexedKVReadyFlag;
             try {
@@ -306,6 +281,7 @@ class IndexedKV {
      * @param {string | number} key
      * @returns {Promise<boolean>}
      */
+    @Ready
     removeItem(key: IDBValidKey): Promise<boolean> {
         return new Promise(async (resolve, reject) => {
             console.log(this.IndexedKVReadyFlag)
@@ -334,4 +310,4 @@ class IndexedKV {
     }
 }
 
-export { IndexedKV };
+export default IndexedKV;

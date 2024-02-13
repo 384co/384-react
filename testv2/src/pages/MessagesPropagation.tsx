@@ -2,7 +2,7 @@ import React from 'react'
 import { useParams } from 'react-router-dom';
 import { observer } from 'mobx-react'
 import { Button, Grid, Paper, Typography, useTheme } from "@mui/material"
-import { useVault, useSnackabra, ChannelMessage, ChannelStore } from '@384/core/v1';
+import { useVault, useSnackabra, ChannelMessage, ChannelStore } from '@384/core';
 import { set } from 'mobx';
 
 
@@ -49,8 +49,6 @@ const MessagesPropagation = observer(() => {
     }
 
     const connect = async () => {
-        if(!SB.store) throw new Error('No store, this should not happen.')
-        if(!vault.id) throw new Error('No vault id, this should not happen.')
         const channel = await SB.store.joinChannel(vault.id, vault.identity)
         readyResolver.current!.resolve()
         setChannel(await channel.connect())

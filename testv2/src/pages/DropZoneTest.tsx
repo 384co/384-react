@@ -1,7 +1,7 @@
 import React from 'react'
-import { DropZone } from "@384/components/v1"
+import { DropZone } from "@384/components"
 import { Button, Chip, Grid, IconButton, Paper, Typography, useTheme } from "@mui/material"
-import { useSBFH, useVault, useSnackabra } from '@384/core/v1/contexts';
+import { useSBFH, useVault, useSnackabra } from '@384/core';
 import DownloadIcon from '@mui/icons-material/Download';
 
 
@@ -29,8 +29,6 @@ const DropZoneTest = () => {
     }, [channel.messages])
 
     const connect = async () => {
-        if(!SB.store) throw new Error('No store, this should not happen.')
-        if(!vault.id) throw new Error('No vault id, this should not happen.')
         await SB.store.ready
         console.log('vault', vault.id)
         const channel = SB.store!.channels[vault.id]
@@ -65,7 +63,7 @@ const DropZoneTest = () => {
     }
 
     const download = async (file: any) => {
-        const knownShard = SBFH.knownShards.get(file.uniqueShardId) as any
+        const knownShard = SBFH.knownShards.get(file.uniqueShardId)
         console.log(knownShard)
         let handle = knownShard.handle
         handle.mimeType = file.type

@@ -3,11 +3,11 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import CssBaseline from "@mui/material/CssBaseline";
 import { BrandingProvider } from "../contexts/BrandingContext";
 import { NotificationProvider } from "../contexts/NotificationContext";
-import SnackabraProvider from "@384/core/v1/contexts/SnackabraContext";
+import SnackabraProvider from "@384/core/contexts/SnackabraContext";
 import { config } from "../config";
 import Error404 from "./Error404";
 import DropZone from "./DropZoneTest";
-import { Provide384 } from "@384/core/v1";
+import { Provide384 } from "@384/core";
 import MessagesPropagation from "./MessagesPropagation";
 const AppRoutes = () => {
     return (

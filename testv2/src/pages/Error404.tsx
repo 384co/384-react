@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button, Grid } from '@mui/material'
-import { PageNotFound } from "@384/components/v1";
+import { PageNotFound } from "@384/components";
 import { Link } from 'react-router-dom';
 
 const LinkButton = (props: any) => {

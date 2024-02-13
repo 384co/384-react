@@ -12,9 +12,11 @@
     "clean": "rm -rf dist && rm -rf build && rm -rf node_modules && rm -rf cypress",
     "start": "tsc -w ",
     "start:react": "cd test && pnpm start",
+    "start:reactV2": "cd testv2 && pnpm start",
     "build": "lerna run --scope \"@384/*\" build",
     "build:all": "pnpm install && pnpm build && rm -rf node_modules",
     "test:v1": "concurrently --names \"UI,TSC,CYPRESS\" -c \"bgBlue.bold,bgMagenta.bold,bgGreen.bold\" \"pnpm start:react\" \"pnpm start\" \"pnpm cypress:open\"",
+    "test:v2": "concurrently --names \"UI,TSC,CYPRESS\" -c \"bgBlue.bold,bgMagenta.bold,bgGreen.bold\" \"pnpm start:reactV2\" \"pnpm start\" \"pnpm cypress:open\"",
     "test:cli": "cypress run --spec \"cypress/e2e/384-tests/*.js\" --browser chrome",
     "cypress:open": "cypress open"
   },

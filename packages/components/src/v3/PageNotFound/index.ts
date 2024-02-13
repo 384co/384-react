@@ -1,0 +1,1 @@
+export { PageNotFound, PageNotFound as default } from './PageNotFound';

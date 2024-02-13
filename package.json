@@ -76,6 +76,7 @@
     "fs-extra": "^11.2.0",
     "lerna": "^8.0.2",
     "lib384": "link:../lib384",
+    "lib384v2": "link:../psm-refactor/lib384",
     "lodash": "^4.17.21",
     "mobx": "^6.12.0",
     "mui-image": "^1.0.7",

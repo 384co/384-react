@@ -30,6 +30,7 @@
     "./src"
   ],
   "exclude": [
+    "./src/v3",
     "**/.*/",
     "**/build",
     "**/cypress",

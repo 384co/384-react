@@ -2,10 +2,7 @@
   "compilerOptions": {
     "module": "esnext",
     "target": "ES2022",
-    "lib": [
-      "es2020",
-      "dom"
-    ],
+    "lib": ["es2020", "dom"],
     "jsx": "preserve",
     "moduleResolution": "node",
     "forceConsistentCasingInFileNames": true,
@@ -17,19 +14,13 @@
     "allowJs": true,
     "skipLibCheck": true,
     "paths": {
-      "@384/components": [
-        "./packages/components/src"
-      ]
+      "@384/components": ["./packages/components/src"]
     },
-    "types": [
-      "node",
-      "react"
-    ]
+    "types": ["node", "react"]
   },
-  "include": [
-    "./src"
-, "playing/Login", "playing/UserRegistration", "playing/DropZone", "playing/Invite", "playing/UserLogin", "todo/UserRegistration", "todo/UserLogin", "todo/Invite", "todo/Login", "todo/DropZonee", "../core/src/contexts/MUI"  ],
+  "include": ["./src"],
   "exclude": [
+    "./src/v3",
     "./todo",
     "**/.*/",
     "**/build",

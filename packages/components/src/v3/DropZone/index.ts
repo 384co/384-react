@@ -1,0 +1,1 @@
+export { DropZoneComponent as DropZone, DropZoneComponent as default } from './DropZone';

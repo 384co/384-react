@@ -1,8 +1,8 @@
 import React, { createContext, useContext, useState } from 'react';
 import { useVault } from '../VaultContext/VaultContext';
-import * as __ from 'lib384/dist/384.esm.js'
+import * as __ from 'lib384v2/dist/384.esm.js'
 import { useSnackabra } from '../SnackabraContext/SnackabraContext';
-import { jwkFromPassphrase } from '../../utils/Vault';
+import { jwkFromPassphrase } from '../../../v1/utils/Vault';
 import IndexedKV from '../../../utils/IndexedKV';
 
 

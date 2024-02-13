@@ -1,7 +1,7 @@
 import * as React from "react"
 import { observer } from "mobx-react";
 import { _i_encrypt, _i_decrypt } from "../../../utils/LocalCrypto/LocalCrypto";
-import { jwkFromPassphrase } from '../../utils/Vault/Vault';
+import { jwkFromPassphrase } from '../../../v1/utils/Vault/Vault';
 import { AppConfig } from "../Provide384/Provide384";
 import { SnackabraProviderProps } from "../SnackabraContext/SnackabraContext";
 export interface AuthProviderProps extends SnackabraProviderProps, React.PropsWithChildren<{}> {

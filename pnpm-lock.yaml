@@ -168,6 +168,9 @@ importers:
       lib384:
         specifier: link:../lib384
         version: link:../lib384
+      lib384v2:
+        specifier: link:../psm-refactor/lib384
+        version: link:../psm-refactor/lib384
       lodash:
         specifier: ^4.17.21
         version: 4.17.21
@@ -282,6 +285,9 @@ importers:
       lib384:
         specifier: link:../../../lib384
         version: link:../../../lib384
+      lib384v2:
+        specifier: link:../../../psm-refactor/lib384
+        version: link:../../../psm-refactor/lib384
       prop-types:
         specifier: ^15.8.1
         version: 15.8.1
@@ -368,6 +374,9 @@ importers:
       lib384:
         specifier: link:../../../lib384
         version: link:../../../lib384
+      lib384v2:
+        specifier: link:../../../psm-refactor/lib384
+        version: link:../../../psm-refactor/lib384
       prop-types:
         specifier: ^15.8.1
         version: 15.8.1
@@ -1335,6 +1344,15 @@ packages:
       '@babel/core': 7.23.9
       '@babel/helper-plugin-utils': 7.22.5
 
+  /@babel/plugin-syntax-flow@7.23.3(@babel/core@7.19.6):
+    resolution: {integrity: sha512-YZiAIpkJAwQXBJLIQbRFayR5c+gJ35Vcz3bg954k7cd73zqjvhacJuL9RbrzPz8qPmZdgqP6EUKwy0PCNhaaPA==}
+    engines: {node: '>=6.9.0'}
+    peerDependencies:
+      '@babel/core': ^7.0.0-0
+    dependencies:
+      '@babel/core': 7.19.6
+      '@babel/helper-plugin-utils': 7.22.5
+
   /@babel/plugin-syntax-flow@7.23.3(@babel/core@7.23.9):
     resolution: {integrity: sha512-YZiAIpkJAwQXBJLIQbRFayR5c+gJ35Vcz3bg954k7cd73zqjvhacJuL9RbrzPz8qPmZdgqP6EUKwy0PCNhaaPA==}
     engines: {node: '>=6.9.0'}
@@ -2241,7 +2259,6 @@ packages:
       '@babel/helper-plugin-utils': 7.22.5
       '@babel/plugin-syntax-jsx': 7.23.3(@babel/core@7.19.6)
       '@babel/types': 7.23.9
-    dev: true
 
   /@babel/plugin-transform-react-jsx@7.23.4(@babel/core@7.23.9):
     resolution: {integrity: sha512-5xOpoPguCZCRbo/JeHlloSkTA8Bld1J/E1/kLfD1nsuiW1m8tduTA1ERCgIZokDflX/IBzKcqR3l7VlRgiIfHA==}
@@ -8005,8 +8022,8 @@ packages:
       '@babel/plugin-transform-react-jsx': ^7.14.9
       eslint: ^8.1.0
     dependencies:
-      '@babel/plugin-syntax-flow': 7.23.3(@babel/core@7.23.9)
-      '@babel/plugin-transform-react-jsx': 7.23.4(@babel/core@7.23.9)
+      '@babel/plugin-syntax-flow': 7.23.3(@babel/core@7.19.6)
+      '@babel/plugin-transform-react-jsx': 7.23.4(@babel/core@7.19.6)
       eslint: 8.56.0
       lodash: 4.17.21
       string-natural-compare: 3.0.1
